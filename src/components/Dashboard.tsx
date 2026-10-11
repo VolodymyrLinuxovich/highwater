@@ -5,6 +5,7 @@ import type { Board, CityCard } from "@/lib/board";
 import Backtest from "./Backtest";
 import CityDetail from "./CityDetail";
 import SandboxDesk from "./SandboxDesk";
+import UsMap from "./UsMap";
 
 type Payload = Board & { dates: string[]; error?: string };
 
@@ -87,6 +88,7 @@ export default function Dashboard() {
       {data && !data.error && (
         <>
           <Stats data={data} />
+          <UsMap cities={data.cities} onSelect={setSelected} />
           <div className="mt-6 flex items-center justify-between">
             <h2 className="text-sm font-medium uppercase tracking-wider text-muted">{cities.length} cities</h2>
             <div className="flex gap-1 text-xs">

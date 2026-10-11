@@ -31,13 +31,8 @@ const metaCache = new Map<string, Promise<StationMeta>>();
 export function stationMeta(id: string): Promise<StationMeta> {
   let p = metaCache.get(id);
   if (!p) {
-    p = fetch(`${NWS}/stations/${id}`, { headers: NWS_HEADERS, cache: "no-store" })
-      .then(async (r) => {
-        if (!r.ok) throw new Error(`station ${id}: HTTP ${r.status}`);
-        const j = await r.json();
-        const [lon, lat] = j.geometry.coordinates;
-        return { id, name: j.properties.name, lat, lon, timeZone: j.properties.timeZone };
-      })
+    p = loadMeta(id)
+      .catch(() => loadMeta(id)) // api.weather.gov occasionally times out on a cold start
       .catch((e) => {
         metaCache.delete(id);
         throw e;
@@ -45,6 +40,14 @@ export function stationMeta(id: string): Promise<StationMeta> {
     metaCache.set(id, p);
   }
   return p;
+}
+
+async function loadMeta(id: string): Promise<StationMeta> {
+  const r = await fetch(`${NWS}/stations/${id}`, { headers: NWS_HEADERS, cache: "no-store", signal: AbortSignal.timeout(8000) });
+  if (!r.ok) throw new Error(`station ${id}: HTTP ${r.status}`);
+  const j = await r.json();
+  const [lon, lat] = j.geometry.coordinates;
+  return { id, name: j.properties.name, lat, lon, timeZone: j.properties.timeZone };
 }
 
 // Offset (minutes east of UTC) of a zone's *standard* time. NWS climate days

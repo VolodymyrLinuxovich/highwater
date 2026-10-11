@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [selected, setSelected] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<"edge" | "certainty" | "city">("certainty");
+  const [showAll, setShowAll] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -128,7 +129,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {cities.map((c) => (
+            {(showAll ? cities : cities.slice(0, 12)).map((c) => (
               <Card
                 key={c.ticker}
                 c={c}
@@ -136,6 +137,16 @@ export default function Dashboard() {
               />
             ))}
           </div>
+          {cities.length > 12 && (
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={() => setShowAll((v) => !v)}
+                className="rounded-full border border-line px-4 py-1.5 text-sm text-muted hover:border-accent/50 hover:text-foreground"
+              >
+                {showAll ? "Show fewer" : `Show all ${cities.length} cities`}
+              </button>
+            </div>
+          )}
           <Backtest />
           <SandboxDesk />
           <HowItWorks params={data.params} />

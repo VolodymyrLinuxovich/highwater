@@ -24,13 +24,13 @@ export default function Backtest() {
 
   const period = typeof bt.period === "string" ? bt.period : bt.period ? `${bt.period.start} to ${bt.period.end}` : "";
   return (
-    <section className="mt-10 border-t border-line pt-6">
-      <h2 className="text-sm font-medium uppercase tracking-wider text-muted">Does it work? Backtest against official NWS highs</h2>
-      <p className="mt-1 text-sm text-muted">
-        {bt.stationDays} station-days, {bt.stations.length} stations, {period}. Each day is replayed as of a local hour using
+    <section className="mt-14">
+      <h2 className="text-lg font-semibold tracking-tight">Does it work?</h2>
+      <p className="mt-1 max-w-3xl text-sm text-muted">
+        Backtest against official NWS highs: {bt.stationDays} station-days, {bt.stations.length} stations, {period}. Each day is replayed as of a local hour using
         only the METARs available then, scored on 7 Gemini-style bins. Lower Brier is better.
       </p>
-      <div className="mt-4 grid gap-6 md:grid-cols-2">
+      <div className="mt-4 grid gap-6 rounded-xl border border-line bg-panel p-5 md:grid-cols-[1.3fr_1fr]">
         <table className="w-full text-sm">
           <thead className="text-left text-xs text-muted">
             <tr className="border-b border-line">
@@ -44,7 +44,7 @@ export default function Backtest() {
             {bt.byAsOfHour.map((r) => {
               const better = r.nowcast.brier < r.forecastOnly.brier;
               return (
-                <tr key={r.hour} className="border-b border-line/60">
+                <tr key={r.hour} className="border-b border-line/60 last:border-0">
                   <td className="num py-2">{r.hour}:00</td>
                   <td className={`num text-right font-semibold ${better ? "text-good" : "text-bad"}`}>{r.nowcast.brier.toFixed(3)}</td>
                   <td className="num text-right text-cool">{r.forecastOnly.brier.toFixed(3)}</td>
@@ -74,7 +74,7 @@ function Calibration({ rows }: { rows: BT["calibration"] }) {
   const pts = rows.filter((r) => r.n >= 20);
   return (
     <div className="flex items-center gap-4">
-      <svg viewBox={`0 0 ${S} ${S}`} className="w-56 shrink-0 rounded-lg border border-line bg-background">
+      <svg viewBox={`0 0 ${S} ${S}`} className="w-48 shrink-0 rounded-lg bg-background">
         <line x1={x(0)} y1={y(0)} x2={x(1)} y2={y(1)} stroke="#1f2a36" strokeDasharray="3 3" />
         <line x1={x(0)} y1={y(0)} x2={x(1)} y2={y(0)} stroke="#1f2a36" />
         <line x1={x(0)} y1={y(0)} x2={x(0)} y2={y(1)} stroke="#1f2a36" />

@@ -48,6 +48,14 @@ export default function UsMap({ cities, onSelect }: { cities: CityCard[]; onSele
     })
     .filter((d): d is NonNullable<typeof d> => d != null)
     .sort((a, b) => a.certainty - b.certainty);
+  // Label the most confident cities first; skip labels that would overlap.
+  const labels: { key: string; x: number; y: number; text: string }[] = [];
+  for (const d of [...dots].reverse()) {
+    const x = d.x;
+    const y = d.y - (5 + d.certainty * 11) - 4;
+    if (labels.some((l) => Math.abs(l.x - x) < 34 && Math.abs(l.y - y) < 16)) continue;
+    labels.push({ key: d.c.ticker, x, y, text: d.c.observedMax != null ? `${Math.round(d.c.observedMax)}°` : "—" });
+  }
   const hovered = dots.find((d) => d.c.ticker === hover);
 
   return (
@@ -68,12 +76,14 @@ export default function UsMap({ cities, onSelect }: { cities: CityCard[]; onSele
             >
               <circle r={r + 6} fill={tempColor(c.observedMax)} opacity={0.12} />
               <circle r={r} fill={tempColor(c.observedMax)} opacity={0.85} stroke={edges ? "#ff7a3d" : "#07090d"} strokeWidth={edges ? 2.5 : 1} />
-              <text y={-r - 4} textAnchor="middle" fontSize="11" fill="#e6edf3" className="num" style={{ pointerEvents: "none" }}>
-                {c.observedMax != null ? `${Math.round(c.observedMax)}°` : "—"}
-              </text>
             </g>
           );
         })}
+        {labels.map((l) => (
+          <text key={l.key} x={l.x} y={l.y} textAnchor="middle" fontSize="11" fill="#e6edf3" className="num" style={{ pointerEvents: "none" }}>
+            {l.text}
+          </text>
+        ))}
       </svg>
       {hovered && (
         <div

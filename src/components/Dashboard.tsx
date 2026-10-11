@@ -21,7 +21,9 @@ export default function Dashboard() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const r = await fetch(`/api/board${date ? `?date=${date}` : ""}`, { cache: "no-store" });
+      const r = await fetch(`/api/board${date ? `?date=${date}` : ""}`, {
+        cache: "no-store",
+      });
       const j = (await r.json()) as Payload;
       setData(j);
     } finally {
@@ -42,7 +44,13 @@ export default function Dashboard() {
     const list = [...(data?.cities ?? [])];
     const top = (c: CityCard) => Math.max(...c.quotes.map((q) => q.fair));
     if (sort === "certainty") list.sort((a, b) => top(b) - top(a));
-    if (sort === "edge") list.sort((a, b) => b.quotes.filter((q) => q.edge).length - a.quotes.filter((q) => q.edge).length || b.dayProgress - a.dayProgress);
+    if (sort === "edge")
+      list.sort(
+        (a, b) =>
+          b.quotes.filter((q) => q.edge).length -
+            a.quotes.filter((q) => q.edge).length ||
+          b.dayProgress - a.dayProgress,
+      );
     if (sort === "city") list.sort((a, b) => a.name.localeCompare(b.name));
     return list;
   }, [data, sort]);
@@ -58,8 +66,9 @@ export default function Dashboard() {
             <h1 className="text-2xl font-semibold tracking-tight">Highwater</h1>
           </div>
           <p className="mt-1 max-w-xl text-sm text-muted">
-            Where will today&apos;s high land? Live nowcasts and two-sided quotes for every Gemini daily high temperature
-            contract, conditioned on what the thermometer has already recorded.
+            Where will today&apos;s high land? Live nowcasts and two-sided
+            quotes for every Gemini daily high temperature contract, conditioned
+            on what the thermometer has already recorded.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -71,26 +80,37 @@ export default function Dashboard() {
                 setSelected(null);
               }}
               className={`rounded-md border px-3 py-1.5 text-sm num ${
-                (date ?? data.cities[0]?.date) === d ? "border-accent text-accent" : "border-line text-muted hover:text-foreground"
+                (date ?? data.cities[0]?.date) === d
+                  ? "border-accent text-accent"
+                  : "border-line text-muted hover:text-foreground"
               }`}
             >
               {d}
             </button>
           ))}
-          <button onClick={load} className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-foreground">
+          <button
+            onClick={load}
+            className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-foreground"
+          >
             {loading ? "Refreshing…" : "Refresh"}
           </button>
         </div>
       </header>
 
-      {data?.error && <p className="mt-6 rounded-md border border-bad/40 bg-bad/10 p-3 text-sm text-bad">{data.error}</p>}
+      {data?.error && (
+        <p className="mt-6 rounded-md border border-bad/40 bg-bad/10 p-3 text-sm text-bad">
+          {data.error}
+        </p>
+      )}
 
       {data && !data.error && (
         <>
           <Stats data={data} />
           <UsMap cities={data.cities} onSelect={setSelected} />
-          <div className="mt-6 flex items-center justify-between">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-muted">{cities.length} cities</h2>
+          <div className="mt-10 flex items-center justify-between">
+            <h2 className="text-lg font-semibold tracking-tight">
+              {cities.length} cities
+            </h2>
             <div className="flex gap-1 text-xs">
               {(["certainty", "edge", "city"] as const).map((s) => (
                 <button
@@ -98,14 +118,22 @@ export default function Dashboard() {
                   onClick={() => setSort(s)}
                   className={`rounded px-2 py-1 ${sort === s ? "bg-panel-2 text-foreground" : "text-muted hover:text-foreground"}`}
                 >
-                  {s === "certainty" ? "Most certain" : s === "edge" ? "Market edges" : "A–Z"}
+                  {s === "certainty"
+                    ? "Most certain"
+                    : s === "edge"
+                      ? "Market edges"
+                      : "A–Z"}
                 </button>
               ))}
             </div>
           </div>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {cities.map((c) => (
-              <Card key={c.ticker} c={c} onClick={() => setSelected(c.ticker)} />
+              <Card
+                key={c.ticker}
+                c={c}
+                onClick={() => setSelected(c.ticker)}
+              />
             ))}
           </div>
           <Backtest />
@@ -114,9 +142,19 @@ export default function Dashboard() {
         </>
       )}
 
-      {!data && <p className="mt-10 text-muted">Pulling markets, METARs and 82 ensemble members for 49 cities…</p>}
+      {!data && (
+        <p className="mt-10 text-muted">
+          Pulling markets, METARs and 82 ensemble members for 49 cities…
+        </p>
+      )}
 
-      {current && <CityDetail c={current} now={data!.generatedAt} onClose={() => setSelected(null)} />}
+      {current && (
+        <CityDetail
+          c={current}
+          now={data!.generatedAt}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   );
 }
@@ -134,103 +172,155 @@ function Stats({ data }: { data: Payload }) {
     <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
       {items.map((i) => (
         <div key={i.k} className="rounded-lg border border-line bg-panel p-3">
-          <div className={`num text-2xl font-semibold ${i.tone ?? ""}`}>{i.v}</div>
+          <div className={`num text-2xl font-semibold ${i.tone ?? ""}`}>
+            {i.v}
+          </div>
           <div className="text-xs text-muted">{i.k}</div>
         </div>
       ))}
       <p className="col-span-2 text-xs text-muted sm:col-span-5">
-        Updated {new Date(data.generatedAt).toLocaleTimeString()} · refreshes every minute · market data from Gemini&apos;s
-        public API, observations from aviationweather.gov, ensembles from Open-Meteo (GFS + ECMWF, 82 members)
+        Updated {new Date(data.generatedAt).toLocaleTimeString()} · refreshes
+        every minute · market data from Gemini&apos;s public API, observations
+        from aviationweather.gov, ensembles from Open-Meteo (GFS + ECMWF, 82
+        members)
       </p>
     </div>
   );
 }
 
 function Card({ c, onClick }: { c: CityCard; onClick: () => void }) {
-  const maxP = Math.max(...c.quotes.map((q) => Math.max(q.fair, q.forecastOnly)), 0.01);
   const lead = [...c.quotes].sort((a, b) => b.fair - a.fair)[0];
   const edges = c.quotes.filter((q) => q.edge).length;
   return (
     <button
       onClick={onClick}
-      className="group rounded-xl border border-line bg-panel p-4 text-left transition hover:border-accent/60 hover:bg-panel-2"
+      className="flex h-full flex-col rounded-xl border border-line bg-panel p-4 text-left transition hover:border-accent/50 hover:bg-panel-2"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="font-medium">{c.name}</div>
-          <div className="num text-xs text-muted">
+      <div className="flex w-full items-baseline justify-between gap-3">
+        <div className="min-w-0">
+          <div className="truncate font-medium leading-tight">{c.name}</div>
+          <div className="num mt-0.5 text-xs text-muted">
             {c.station} · {c.localTime}
           </div>
         </div>
-        <div className="text-right">
-          <div className="num text-2xl font-semibold text-accent">{c.observedMax != null ? `${c.observedMax.toFixed(0)}°` : "—"}</div>
-          <div className="text-[10px] uppercase tracking-wider text-muted">high so far</div>
+        <div className="shrink-0 text-right">
+          <div className="num text-[26px] font-semibold leading-none text-accent">
+            {c.observedMax != null ? `${c.observedMax.toFixed(0)}°` : "—"}
+          </div>
+          <div className="mt-1 text-[10px] uppercase tracking-wider text-muted">
+            high so far
+          </div>
         </div>
       </div>
 
-      <div className="mt-3 h-1 w-full overflow-hidden rounded bg-line">
-        <div className="h-full bg-gradient-to-r from-cool to-accent" style={{ width: pct(c.dayProgress) }} />
-      </div>
-      <div className="mt-1 flex justify-between text-[10px] text-muted">
-        <span>climate day {pct(c.dayProgress)} done</span>
-        <span className="num">
-          bias {c.bias >= 0 ? "+" : ""}
-          {c.bias}°
-        </span>
+      <div className="mt-3 flex w-full items-center gap-2 text-[10px] text-muted">
+        <div className="h-1 flex-1 overflow-hidden rounded-full bg-line">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-cool to-accent"
+            style={{ width: pct(c.dayProgress) }}
+          />
+        </div>
+        <span className="num shrink-0">{pct(c.dayProgress)} of day</span>
       </div>
 
-      <div className="mt-3 space-y-1">
-        {c.quotes.map((q) => (
-          <div key={q.symbol} className="grid grid-cols-[88px_1fr_36px] items-center gap-2 text-xs">
-            <span className={`num truncate ${q.status === "dead" ? "text-muted line-through" : ""}`}>{shortLabel(q.label)}</span>
-            <div className="relative h-3 rounded-sm bg-background">
-              <div className="absolute inset-y-0 left-0 rounded-sm bg-cool/25" style={{ width: pct(q.forecastOnly / maxP) }} />
-              <div
-                className={`absolute inset-y-0 left-0 rounded-sm ${q === lead ? "bg-accent" : "bg-accent/60"}`}
-                style={{ width: pct(q.fair / maxP) }}
-              />
-              {q.market.last != null && (
-                <div className="absolute inset-y-[-2px] w-0.5 bg-foreground" style={{ left: pct(Math.min(1, q.market.last / maxP)) }} />
-              )}
+      <div className="mt-3 w-full space-y-1.5">
+        {c.quotes.map((q) => {
+          const dead = q.status === "dead";
+          return (
+            <div
+              key={q.symbol}
+              className={`grid grid-cols-[76px_1fr_34px] items-center gap-2 text-xs ${dead ? "opacity-35" : ""}`}
+            >
+              <span className="num truncate">{shortLabel(q.label)}</span>
+              <div className="relative h-2 rounded-full bg-line/70">
+                <div
+                  className={`absolute inset-y-0 left-0 rounded-full ${q === lead ? "bg-accent" : "bg-accent/55"}`}
+                  style={{ width: pct(q.fair) }}
+                />
+                {q.forecastOnly >= 0.01 && (
+                  <div
+                    className="absolute -inset-y-0.5 w-[3px] rounded-full bg-cool"
+                    style={{ left: `calc(${pct(q.forecastOnly)} - 1.5px)` }}
+                  />
+                )}
+                {q.market.last != null && (
+                  <div
+                    className="absolute -inset-y-1 w-[2px] bg-foreground"
+                    style={{ left: `calc(${pct(q.market.last)} - 1px)` }}
+                  />
+                )}
+              </div>
+              <span
+                className={`num text-right ${q === lead ? "font-semibold text-foreground" : "text-muted"}`}
+              >
+                {pct(q.fair)}
+              </span>
             </div>
-            <span className="num text-right">{pct(q.fair)}</span>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      <div className="mt-3 flex items-center justify-between text-[11px] text-muted">
+
+      <div className="mt-auto w-full pt-3" />
+      <div className="flex w-full items-center justify-between border-t border-line/60 pt-3 text-[11px] text-muted">
         <span>
-          median <span className="num text-foreground">{c.median}°</span> · 80% <span className="num">{c.p10}–{c.p90}°</span>
+          median <span className="num text-foreground">{c.median}°</span> · 80%{" "}
+          <span className="num">
+            {c.p10}–{c.p90}°
+          </span>
         </span>
-        {edges > 0 && <span className="rounded bg-accent/15 px-1.5 py-0.5 text-accent">{edges} edge</span>}
+        {edges > 0 ? (
+          <span className="rounded-full bg-accent/15 px-2 py-0.5 text-accent">
+            {edges} edge
+          </span>
+        ) : (
+          <span className="num">
+            bias {c.bias >= 0 ? "+" : ""}
+            {c.bias}°
+          </span>
+        )}
       </div>
     </button>
   );
 }
 
 export function shortLabel(l: string) {
-  return l.replace("°F or below", "° or less").replace("°F or above", "°+").replace(/°F to (\d+)°F/, "–$1°").replace(/°F/g, "°");
+  return l
+    .replace("°F or below", "° or less")
+    .replace("°F or above", "°+")
+    .replace(/°F to (\d+)°F/, "–$1°")
+    .replace(/°F/g, "°");
 }
 
 function HowItWorks({ params }: { params: Board["params"] }) {
   return (
-    <section className="mt-10 grid gap-4 border-t border-line pt-6 text-sm text-muted md:grid-cols-3">
-      <div>
-        <h3 className="mb-1 font-medium text-foreground">1 · The floor</h3>
-        Gemini settles on the NWS Daily Climate Report, a midnight-to-midnight local <em>standard</em> time window. Every
-        METAR since that midnight (plus the 6-hour max groups) gives the high so far. The official high can&apos;t finish
-        below it, so any bin under it is dead.
-      </div>
-      <div>
-        <h3 className="mb-1 font-medium text-foreground">2 · The rest of the day</h3>
-        82 ensemble members (GFS + ECMWF) cover the remaining hours, shifted by today&apos;s observed forecast miss (recency
-        weighted, {params.biasHalfLifeHours}h half-life) with error that grows with lead time ({params.noiseBase}°F +{" "}
-        {params.noiseSlope}°F/h, capped at {params.noiseCap}°F).
-      </div>
-      <div>
-        <h3 className="mb-1 font-medium text-foreground">3 · Price it</h3>
-        Final high = max(high so far + unobserved peak, hottest remaining hour), Monte Carlo over all members, rounded to
-        whole °F. Bars: <span className="text-accent">Highwater</span> vs <span className="text-cool">forecast alone</span>
-        ; white tick = last market trade. Params: {params.source}.
+    <section className="mt-14">
+      <h2 className="text-lg font-semibold tracking-tight">How it works</h2>
+      <div className="mt-4 grid gap-3 text-sm leading-relaxed text-muted md:grid-cols-3">
+        <div className="rounded-xl border border-line bg-panel p-5">
+          <h3 className="mb-1 font-medium text-foreground">1 · The floor</h3>
+          Gemini settles on the NWS Daily Climate Report, a midnight-to-midnight
+          local <em>standard</em> time window. Every METAR since that midnight
+          (plus the 6-hour max groups) gives the high so far. The official high
+          can&apos;t finish below it, so any bin under it is dead.
+        </div>
+        <div className="rounded-xl border border-line bg-panel p-5">
+          <h3 className="mb-1 font-medium text-foreground">
+            2 · The rest of the day
+          </h3>
+          82 ensemble members (GFS + ECMWF) cover the remaining hours, shifted
+          by today&apos;s observed forecast miss (recency weighted,{" "}
+          {params.biasHalfLifeHours}h half-life) with error that grows with lead
+          time ({params.noiseBase}°F + {params.noiseSlope}°F/h, capped at{" "}
+          {params.noiseCap}°F).
+        </div>
+        <div className="rounded-xl border border-line bg-panel p-5">
+          <h3 className="mb-1 font-medium text-foreground">3 · Price it</h3>
+          Final high = max(high so far + unobserved peak, hottest remaining
+          hour), Monte Carlo over all members, rounded to whole °F. Bars:{" "}
+          <span className="text-accent">Highwater</span>; blue tick:{" "}
+          <span className="text-cool">forecast alone</span>; white tick = last
+          market trade. Params: {params.source}.
+        </div>
       </div>
     </section>
   );
@@ -240,8 +330,19 @@ function Logo() {
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden>
       <rect width="28" height="28" rx="7" fill="#141b24" />
-      <path d="M4 19 Q9 13 14 17 T24 12" stroke="#4cc2ff" strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d="M4 9 H24" stroke="#ff7a3d" strokeWidth="2" strokeDasharray="2 2.5" />
+      <path
+        d="M4 19 Q9 13 14 17 T24 12"
+        stroke="#4cc2ff"
+        strokeWidth="2"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d="M4 9 H24"
+        stroke="#ff7a3d"
+        strokeWidth="2"
+        strokeDasharray="2 2.5"
+      />
     </svg>
   );
 }

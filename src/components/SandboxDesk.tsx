@@ -65,10 +65,10 @@ export default function SandboxDesk() {
   const orders = Array.isArray(desk.orders) ? desk.orders : ((desk.orders as { orders?: unknown[] } | null)?.orders ?? []);
 
   return (
-    <section className="mt-10 border-t border-line pt-6">
+    <section className="mt-14">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-sm font-medium uppercase tracking-wider text-muted">Sandbox desk: live orders on Gemini</h2>
+          <h2 className="text-lg font-semibold tracking-tight">Sandbox desk: live orders on Gemini</h2>
           <p className="mt-1 max-w-2xl text-sm text-muted">
             Gemini&apos;s sandbox lists crypto price contracts, not weather. The same &ldquo;where will it land&rdquo; engine prices
             them from Gemini spot and 2-hour realized volatility, then trades the gaps with real sandbox orders.

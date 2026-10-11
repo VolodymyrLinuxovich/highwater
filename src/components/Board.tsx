@@ -21,7 +21,7 @@ const FILTERS: { id: Filter; label: string; test: (c: CityCard) => boolean }[] =
 
 export default function Board() {
   const [date, setDate] = useState<string | null>(null);
-  const { data, loading, load } = useBoard(date);
+  const { data, loading, refresh } = useBoard(date);
   // Deep link: /board?city=NYC opens that city's detail once data arrives.
   const [selected, setSelected] = useState<string | null>(() =>
     typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("city"),
@@ -80,7 +80,7 @@ export default function Board() {
               {d}
             </button>
           ))}
-          <button onClick={load} className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-foreground">
+          <button onClick={refresh} className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-foreground">
             {loading ? "Refreshing…" : "Refresh"}
           </button>
         </div>

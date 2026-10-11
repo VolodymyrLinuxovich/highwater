@@ -3,19 +3,35 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { CityCard } from "@/lib/board";
-import { pct, shortLabel } from "@/lib/format";
+import { pct, shortLabel, tempColor } from "@/lib/format";
 import { useBoard } from "@/lib/useBoard";
 import HighwaterChart from "./HighwaterChart";
+import { CountUp, Reveal, useInView } from "./Reveal";
 
-const FEATURED = ["NYC", "CHI", "MIA", "DEN", "LA", "SEA", "ATL", "DFW", "PHX", "BOS"];
+const FEATURED = [
+  "NYC",
+  "CHI",
+  "MIA",
+  "DEN",
+  "LA",
+  "SEA",
+  "ATL",
+  "DFW",
+  "PHX",
+  "BOS",
+];
 
 // The hero instrument: one real city's day, switchable between a few live cities.
 export function Instrument() {
   const { data } = useBoard();
   const [pick, setPick] = useState<string | null>(null);
   const cities = (data?.cities ?? []).filter((c) => FEATURED.includes(c.city));
-  const options = FEATURED.map((code) => cities.find((c) => c.city === code)).filter((c): c is CityCard => !!c).slice(0, 5);
-  const fallback = options.find((c) => c.quotes.some((q) => q.status === "dead")) ?? options[0];
+  const options = FEATURED.map((code) => cities.find((c) => c.city === code))
+    .filter((c): c is CityCard => !!c)
+    .slice(0, 5);
+  const fallback =
+    options.find((c) => c.quotes.some((q) => q.status === "dead")) ??
+    options[0];
   const c = options.find((o) => o.city === pick) ?? fallback;
 
   if (data?.error) {
@@ -40,7 +56,11 @@ export function Instrument() {
   const dead = c.quotes.filter((q) => q.status === "dead").length;
   const lead = [...c.quotes].sort((a, b) => b.fair - a.fair)[0];
   const at = c.observedAt
-    ? new Intl.DateTimeFormat("en-US", { timeZone: c.timeZone, hour: "numeric", minute: "2-digit" }).format(c.observedAt)
+    ? new Intl.DateTimeFormat("en-US", {
+        timeZone: c.timeZone,
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(c.observedAt)
     : null;
 
   return (
@@ -54,10 +74,15 @@ export function Instrument() {
               aria-selected={o === c}
               onClick={() => setPick(o.city)}
               className={`rounded-full px-3 py-1 text-sm transition ${
-                o === c ? "bg-foreground text-background" : "text-muted hover:text-foreground"
+                o === c
+                  ? "bg-foreground text-background"
+                  : "text-muted hover:text-foreground"
               }`}
             >
-              {o.name} <span className="num opacity-60">{o.observedMax != null ? `${Math.round(o.observedMax)}°` : ""}</span>
+              {o.name}{" "}
+              <span className="num opacity-60">
+                {o.observedMax != null ? `${Math.round(o.observedMax)}°` : ""}
+              </span>
             </button>
           ))}
         </div>
@@ -74,7 +99,8 @@ export function Instrument() {
       <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted">
         {c.observedMax != null ? (
           <>
-            In {c.name} the high reached <span className="num text-foreground">{c.observedMax}°F</span>
+            In {c.name} the high reached{" "}
+            <span className="num text-foreground">{c.observedMax}°F</span>
             {at ? ` at ${at}` : ""}.{" "}
             {dead > 0 ? (
               <>
@@ -88,9 +114,14 @@ export function Instrument() {
             )}
           </>
         ) : null}
-        Highwater gives <span className="num text-foreground">{shortLabel(lead.label)}</span> a{" "}
-        <span className="num text-accent">{pct(lead.fair)}</span> chance, with {c.hoursLeft}h of the climate day left.{" "}
-        <Link href={`/board?city=${c.city}`} className="whitespace-nowrap text-accent hover:underline">
+        Highwater gives{" "}
+        <span className="num text-foreground">{shortLabel(lead.label)}</span> a{" "}
+        <span className="num text-accent">{pct(lead.fair)}</span> chance, with{" "}
+        {c.hoursLeft}h of the climate day left.{" "}
+        <Link
+          href={`/board?city=${c.city}`}
+          className="whitespace-nowrap text-accent hover:underline"
+        >
           Every contract →
         </Link>
       </p>
@@ -103,8 +134,16 @@ type Real = {
   cities: number;
   period: { start: string; end: string };
   stationCheck: { agree: number }[];
-  byAsOfHour: { hour: number; nowcast: { brier: number }; forecastOnly: { brier: number } }[];
-  dead: { ruledOut: number; resolvedNo: number; withTruncatedFloor?: { ruledOut: number; resolvedNo: number } };
+  byAsOfHour: {
+    hour: number;
+    nowcast: { brier: number };
+    forecastOnly: { brier: number };
+  }[];
+  dead: {
+    ruledOut: number;
+    resolvedNo: number;
+    withTruncatedFloor?: { ruledOut: number; resolvedNo: number };
+  };
 };
 
 // Proof, computed from public/realcontracts.json.
@@ -131,27 +170,114 @@ export function Proof() {
       label: "contracts called impossible that settled NO",
       tone: "text-accent",
     },
-    { big: `${agree}/${r.stationCheck.length}`, label: "cities where our station matched every Gemini settlement", tone: "text-cool" },
+    {
+      big: `${agree}/${r.stationCheck.length}`,
+      label: "cities where our station matched every Gemini settlement",
+      tone: "text-cool",
+    },
   ];
   return (
     <div>
       <div className="grid divide-line sm:grid-cols-3 sm:divide-x">
         {items.map((i, n) => (
-          <div key={i.label} className={`py-5 sm:py-1 ${n > 0 ? "border-t border-line sm:border-t-0 sm:pl-8" : ""} ${n < 2 ? "sm:pr-8" : ""}`}>
-            <div className={`num text-5xl font-semibold tracking-tight ${i.tone}`}>{i.big}</div>
-            <div className="mt-2 text-sm leading-snug text-muted">{i.label}</div>
-          </div>
+          <Reveal
+            key={i.label}
+            delay={n * 120}
+            className={`py-5 sm:py-1 ${n > 0 ? "border-t border-line sm:border-t-0 sm:pl-8" : ""} ${n < 2 ? "sm:pr-8" : ""}`}
+          >
+            <div
+              className={`num text-5xl font-semibold tracking-tight ${i.tone}`}
+            >
+              <CountUp value={i.big} />
+            </div>
+            <div className="mt-2 text-sm leading-snug text-muted">
+              {i.label}
+            </div>
+          </Reveal>
         ))}
       </div>
-      <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
-        Replayed on {r.events} settled Gemini markets ({r.cities} cities, {r.period.start} to {r.period.end}), using only the
-        reports available at each hour. Caveats: the historical forecasts behave like short-range runs, which flatters the
-        baseline; some parameters were fitted on the same days; before noon Highwater is no better than the forecast, so it
-        leans on it.{" "}
-        <Link href="/results" className="whitespace-nowrap text-accent hover:underline">
-          Full results →
-        </Link>
-      </p>
+      <Reveal delay={360}>
+        <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+          Replayed on {r.events} settled Gemini markets ({r.cities} cities,{" "}
+          {r.period.start} to {r.period.end}), using only the reports available
+          at each hour. Caveats: the historical forecasts behave like
+          short-range runs, which flatters the baseline; some parameters were
+          fitted on the same days; before noon Highwater is no better than the
+          forecast, so it leans on it.{" "}
+          <Link
+            href="/results"
+            className="whitespace-nowrap text-accent hover:underline"
+          >
+            Full results →
+          </Link>
+        </p>
+      </Reveal>
+    </div>
+  );
+}
+
+// Replaces a generic eyebrow with what is true right now.
+export function LiveLine() {
+  const { data } = useBoard();
+  const s = data?.stats;
+  const day = data?.cities?.[0]?.date;
+  return (
+    <div className="flex min-h-5 flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+      <span className="flex items-center gap-2 text-good">
+        <span className="hw-pulse inline-block h-1.5 w-1.5 rounded-full bg-good" />
+        Live
+      </span>
+      {s && day && (
+        <>
+          <span className="num">
+            {new Date(`${day}T12:00:00Z`).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", timeZone: "UTC" })}
+          </span>
+          <span className="text-line">/</span>
+          <span>
+            <span className="num text-foreground">{s.dead}</span> of <span className="num">{s.contracts}</span> Gemini contracts
+            already ruled out
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Section transition: every city's high so far, west to east, growing in on scroll.
+export function CityTape() {
+  const { data } = useBoard();
+  const { ref, seen } = useInView<HTMLDivElement>("0px 0px -10% 0px");
+  const cities = [...(data?.cities ?? [])].filter((c) => c.observedMax != null).sort((a, b) => a.lon - b.lon);
+  if (!cities.length) return <div ref={ref} className="h-[132px]" />;
+  const highs = cities.map((c) => c.observedMax!);
+  const lo = Math.min(...highs);
+  const hi = Math.max(...highs);
+  const coolest = cities[highs.indexOf(lo)];
+  const hottest = cities[highs.indexOf(hi)];
+  return (
+    <div ref={ref} className={`tape ${seen ? "is-visible" : ""}`}>
+      <div className="flex h-20 items-end gap-[3px]" role="img" aria-label={`Highs so far in ${cities.length} cities, from ${Math.round(lo)} to ${Math.round(hi)} degrees`}>
+        {cities.map((c, i) => (
+          <div
+            key={c.ticker}
+            title={`${c.name} ${Math.round(c.observedMax!)}°F`}
+            className="tape-bar flex-1 rounded-t-sm"
+            style={{
+              height: `${18 + ((c.observedMax! - lo) / Math.max(1, hi - lo)) * 82}%`,
+              background: tempColor(c.observedMax),
+              transitionDelay: `${i * 18}ms`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-muted">
+        <span>
+          {cities.length} cities, west to east · coolest <span className="text-cool">{coolest.name} {Math.round(lo)}°</span>
+        </span>
+        <span>
+          hottest <span className="text-accent">{hottest.name} {Math.round(hi)}°</span> · high so far today
+        </span>
+      </div>
     </div>
   );
 }

@@ -29,7 +29,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${serif.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${serif.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Lets reveal animations hide content only when scripts can show it again. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="flex min-h-full flex-col">
         <SiteNav />
         <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-16 sm:px-6">{children}</main>

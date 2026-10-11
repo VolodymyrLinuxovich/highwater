@@ -1,5 +1,5 @@
 import { sandboxCryptoBoard } from "@/lib/crypto";
-import { placeOrder, tradingEnabled, type OrderIn } from "@/lib/gemini-trade";
+import { placeOrder, type OrderIn } from "@/lib/gemini-trade";
 
 const MIN_EDGE = 0.04;
 const MAX_ORDERS = 4;
@@ -7,7 +7,6 @@ const MAX_ORDERS = 4;
 // Take the largest gaps between fair value and the sandbox book: buy Yes when
 // the ask is below fair, buy No when the bid is above fair.
 export async function POST(req: Request) {
-  if (!tradingEnabled()) return Response.json({ error: "Set GEMINI_API_KEY and GEMINI_API_SECRET in .env.local" }, { status: 400 });
   const { quantity = 1, dryRun = false } = (await req.json().catch(() => ({}))) as { quantity?: number; dryRun?: boolean };
   const { events, staleSince } = await sandboxCryptoBoard();
   if (staleSince) return Response.json({ error: "Gemini sandbox is not responding; not trading on stale prices." }, { status: 503 });

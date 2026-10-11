@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { CryptoEvent } from "@/lib/crypto";
 
-type Desk = { tradingEnabled: boolean; events: CryptoEvent[]; staleSince?: number | null; orders: unknown; ordersError: string | null; error?: string };
+type Desk = { tradingEnabled: boolean; mode?: "auto" | "live" | "paper"; events: CryptoEvent[]; staleSince?: number | null; orders: unknown; ordersError: string | null; error?: string };
 type Placed = { label: string; event: string; side: string; outcome: string; price: number; fair: number; gap: number; ok: boolean; order?: { orderId?: number; status?: string; paper?: boolean; geminiRejection?: string }; error?: string };
 
 const pct = (p: number) => `${Math.round(p * 100)}%`;
@@ -66,7 +66,7 @@ export default function SandboxDesk() {
   const events = (desk.events ?? []).filter((e) => e.quotes.some((q) => q.market.bid != null || q.market.ask != null)).slice(0, 6);
   const orders = (Array.isArray(desk.orders) ? desk.orders : ((desk.orders as { orders?: unknown[] } | null)?.orders ?? [])) as { paper?: boolean }[];
   const paperOrders = orders.filter((o) => o.paper).length;
-  const anyPaper = paperOrders > 0 || (placed ?? []).some((p) => p.order?.paper);
+  const anyPaper = desk.mode === "paper" || paperOrders > 0 || (placed ?? []).some((p) => p.order?.paper);
 
   return (
     <section>
@@ -100,8 +100,9 @@ export default function SandboxDesk() {
       {anyPaper && (
         <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
           <PaperTag />
-          Gemini&apos;s sandbox is rejecting prediction orders right now, so each order is sent to Gemini first and, when rejected,
-          kept as a paper order that fills only when the live sandbox book crosses it.
+          {desk.mode === "paper"
+            ? "No Gemini API key on this deployment, so orders are paper orders. They fill only when the live sandbox book crosses them."
+            : "Gemini's sandbox is rejecting prediction orders right now, so each order is sent to Gemini first and, when rejected, kept as a paper order that fills only when the live sandbox book crosses it."}
         </p>
       )}
 

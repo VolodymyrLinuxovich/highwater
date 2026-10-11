@@ -14,8 +14,8 @@ export default function LabsPage() {
         2-hour realized volatility.
       </PageHeader>
       <div className="mb-6 rounded-xl border border-line bg-panel-2 p-4 text-sm text-muted">
-        Sandbox data uses test funds and can be unavailable. Order buttons only work where a Gemini sandbox API key is
-        configured; otherwise they stay disabled. Looking for weather? <Link href="/board" className="text-accent hover:underline">Open the live board</Link>.
+        Sandbox data uses test funds and can be unavailable. With a Gemini sandbox API key, orders go to Gemini; without
+        one, as on this public site, they run as labeled paper orders against the live sandbox book. Looking for weather? <Link href="/board" className="text-accent hover:underline">Open the live board</Link>.
       </div>
       <SandboxDesk />
     </>

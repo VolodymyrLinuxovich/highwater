@@ -170,7 +170,7 @@ function Endpoint({ path, price, what }: { path: string; price: number; what: st
       <div className="num text-xs text-cool">GET {path}</div>
       <div className="mt-1 flex items-baseline justify-between gap-2">
         <span className="text-xs text-muted">{what}</span>
-        <span className="num text-sm font-semibold">{price} AUSD</span>
+        <span className="num shrink-0 whitespace-nowrap text-sm font-semibold">{price} AUSD</span>
       </div>
     </div>
   );

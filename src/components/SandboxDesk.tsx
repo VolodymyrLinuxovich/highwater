@@ -123,7 +123,7 @@ export default function SandboxDesk() {
               <div className="num text-xs text-muted">{e.minutesLeft.toFixed(0)} min</div>
             </div>
             <div className="num text-xs text-muted">
-              spot {e.spot.toLocaleString(undefined, { maximumFractionDigits: e.spot > 100 ? 0 : 3 })} · σ{" "}
+              spot {e.spot.toLocaleString("en-US", { maximumFractionDigits: e.spot > 100 ? 0 : 3 })} · σ{" "}
               {(e.volPerSqrtMin * 1e4).toFixed(1)} bp/√min
             </div>
             <table className="mt-2 w-full text-xs">
@@ -136,7 +136,7 @@ export default function SandboxDesk() {
                 </tr>
               </thead>
               <tbody>
-                {e.quotes.map((q) => (
+                {[...e.quotes].sort((a, b) => a.strike - b.strike).map((q) => (
                   <tr key={q.symbol}>
                     <td className="num">{q.label.replace(" or above", "+")}</td>
                     <td className="num text-right text-accent">{pct(q.fair)}</td>

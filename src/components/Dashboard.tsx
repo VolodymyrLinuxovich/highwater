@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Board, CityCard } from "@/lib/board";
+import AgentApi from "./AgentApi";
 import Backtest from "./Backtest";
 import CityDetail from "./CityDetail";
 import SandboxDesk from "./SandboxDesk";
@@ -148,6 +149,7 @@ export default function Dashboard() {
             </div>
           )}
           <Backtest />
+          <AgentApi />
           <SandboxDesk />
           <HowItWorks params={data.params} />
         </>

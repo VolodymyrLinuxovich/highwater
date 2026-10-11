@@ -89,6 +89,10 @@ async function tick(prev: PaperState | null): Promise<PaperState> {
       else if (q.ask != null && q.market.bid != null && q.market.bid >= q.ask && pos.qty > -MAX_POSITION)
         fill = { t: now, symbol: q.symbol, city: c.name, label: q.label, side: "sell", price: q.market.bid, fair: q.fair, quote: q.ask };
       if (!fill) continue;
+      // Gemini doesn't show size, so assume one contract per price level: a resting
+      // order that already filled us fills again only after its price changes.
+      const last = s.fills.findLast((f) => f.symbol === fill.symbol && f.side === fill.side);
+      if (last && last.price === fill.price) continue;
       pos.qty += fill.side === "buy" ? 1 : -1;
       pos.cash += fill.side === "buy" ? -fill.price : fill.price;
       s.fills.push(fill);

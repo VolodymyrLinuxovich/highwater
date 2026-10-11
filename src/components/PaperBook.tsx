@@ -123,7 +123,7 @@ export default function PaperBook() {
             </div>
           </div>
           <p className="mt-2 text-xs text-muted">
-            Running since {time(book.startedAt)} · {book.ticks} updates · last {time(book.updatedAt)} · one contract per fill, at most 3 per contract
+            Running since {time(book.startedAt)} · {book.ticks} updates · last {time(book.updatedAt)} · one contract per fill and price level, at most 3 per contract
           </p>
         </>
       )}

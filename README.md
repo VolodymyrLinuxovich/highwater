@@ -192,7 +192,8 @@ Highwater does not stop at a price. Every minute it rests its two-sided quote on
 (about 320 a day, 49 cities) against Gemini's **real production order books**:
 
 - A quote fills only when Gemini's best ask drops to our bid, or Gemini's best bid rises to our ask.
-- One contract per fill, at most 3 per contract in either direction.
+- Gemini's API doesn't show size, so each price level fills one contract; the same resting order fills us again only
+  after its price changes. At most 3 contracts held per market in either direction.
 - Every position is marked at Highwater's current fair value, so the panel shows fills, positions, P&L at fair and the
   edge captured at each fill.
 - Nothing is sent to Gemini. The book is stored as one JSON per day in Vercel Blob, so it survives across serverless

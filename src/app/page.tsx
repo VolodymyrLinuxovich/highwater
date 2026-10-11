@@ -20,25 +20,25 @@ const STEPS = [
 export default function Home() {
   return (
     <>
-      <section className="relative pt-12 sm:pt-16">
+      <section className="relative pt-14 text-center sm:pt-20">
         <div
           className="radar-grid pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px]"
           aria-hidden
         />
         <LiveLine />
-        <h1 className="mt-4 max-w-4xl text-[42px] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-[68px]">
+        <h1 className="mx-auto mt-5 max-w-4xl text-[42px] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-[68px]">
           The day&apos;s high is{" "}
           <span className="font-serif font-normal italic text-accent">
             still being written.
           </span>
         </h1>
-        <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <p className="max-w-xl text-lg leading-relaxed text-muted">
+        <div className="mt-6 flex flex-col items-center gap-7">
+          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted">
             Highwater reads every weather report since midnight and 82 forecast
             runs for the hours left, then estimates the probability of each of
             Gemini&apos;s daily high temperature contracts in 49 US cities, live.
           </p>
-          <div className="flex shrink-0 items-center gap-5">
+          <div className="flex shrink-0 items-center justify-center gap-5">
             <Link
               href="/board"
               className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-background hover:brightness-110"
@@ -54,7 +54,7 @@ export default function Home() {
           </div>
         </div>
 
-        <Reveal delay={150} className="mt-10 sm:mt-12">
+        <Reveal delay={150} className="mt-12 text-left sm:mt-14">
           <div className="border-y border-line py-6">
             <Instrument />
           </div>
@@ -66,7 +66,7 @@ export default function Home() {
       </div>
       <section className="mt-16">
         <Reveal>
-          <h2 className="max-w-2xl text-3xl font-semibold tracking-tight">
+          <h2 className="mx-auto max-w-2xl text-center text-3xl font-semibold tracking-tight">
             Scored on markets that{" "}
             <span className="font-serif font-normal italic">
               already settled.
@@ -81,12 +81,12 @@ export default function Home() {
       <Rule className="mt-20" />
       <section className="mt-14">
         <Reveal>
-          <h2 className="text-3xl font-semibold tracking-tight">
+          <h2 className="text-center text-3xl font-semibold tracking-tight">
             How it works
           </h2>
         </Reveal>
         <Rule className="mt-8" />
-        <ol className="mt-8 grid gap-8 md:grid-cols-3 md:gap-10">
+        <ol className="mt-8 grid gap-8 text-center md:grid-cols-3 md:gap-10">
           {STEPS.map((s, i) => (
             <li key={s.title}>
               <Reveal delay={i * 140}>
@@ -102,7 +102,7 @@ export default function Home() {
           ))}
         </ol>
         <Reveal delay={420}>
-          <p className="mt-10 text-sm text-muted">
+          <p className="mt-12 text-center text-sm text-muted">
             Building a bot? Forecasts are sold per call over x402 in AUSD.{" "}
             <Link href="/developers" className="text-accent hover:underline">
               For developers →

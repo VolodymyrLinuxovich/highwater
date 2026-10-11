@@ -13,7 +13,7 @@ const GUTTER = 190; // right column for range labels and probabilities (wide lay
 
 type Band = { label: string; y0: number; y1: number; fair: number; dead: boolean; lead: boolean; symbol: string };
 
-export default function HighwaterChart({ c, now }: { c: CityCard; now: number }) {
+export default function HighwaterChart({ c, now, showList = true }: { c: CityCard; now: number; showList?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(960);
 
@@ -102,8 +102,8 @@ export default function HighwaterChart({ c, now }: { c: CityCard; now: number })
 
   return (
     <div>
-      <div ref={ref} className="w-full">
-        <svg width={width} height={H} viewBox={`0 0 ${width} ${H}`} role="img" aria-label={`${c.name}: observed temperatures and contract probabilities today`}>
+      <div ref={ref} className="w-full min-w-0 overflow-hidden">
+        <svg width={width} height={H} viewBox={`0 0 ${width} ${H}`} style={{ maxWidth: "100%" }} role="img" aria-label={`${c.name}: observed temperatures and contract probabilities today`}>
           <defs>
             <pattern id="hw-dead" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <line x1="0" y1="0" x2="0" y2="7" stroke="#2a3644" strokeWidth="2" />
@@ -225,7 +225,7 @@ export default function HighwaterChart({ c, now }: { c: CityCard; now: number })
       </div>
 
       {/* Narrow layout: probabilities as a list under the chart */}
-      {!wide && (
+      {!wide && showList && (
         <div className="mt-3 columns-2 gap-x-6 text-sm">
           {[...bands].reverse().map((b) => (
             <div key={b.symbol} className={`flex break-inside-avoid items-center justify-between py-0.5 ${b.dead ? "text-muted/60 line-through" : ""}`}>

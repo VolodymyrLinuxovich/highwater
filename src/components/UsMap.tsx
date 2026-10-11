@@ -11,7 +11,17 @@ import { tempColor } from "@/lib/format";
 const W = 960;
 const H = 560;
 
-export default function UsMap({ cities, onSelect }: { cities: CityCard[]; onSelect: (ticker: string) => void }) {
+export default function UsMap({
+  cities,
+  onSelect,
+  selected = null,
+  dimmed,
+}: {
+  cities: CityCard[];
+  onSelect: (ticker: string) => void;
+  selected?: string | null;
+  dimmed?: Set<string>;
+}) {
   const [hover, setHover] = useState<string | null>(null);
   const { borders, nation, projection } = useMemo(() => {
     const topo = states as unknown as Topology<{ states: GeometryCollection }>;
@@ -42,6 +52,7 @@ export default function UsMap({ cities, onSelect }: { cities: CityCard[]; onSele
   // Label the most confident cities first; skip labels that would overlap.
   const labels: { key: string; x: number; y: number; text: string }[] = [];
   for (const d of [...dots].reverse()) {
+    if (dimmed?.has(d.c.ticker) && d.c.ticker !== selected) continue;
     const x = d.x;
     const y = d.y - (5 + d.certainty * 11) - 4;
     if (labels.some((l) => Math.abs(l.x - x) < 34 && Math.abs(l.y - y) < 16)) continue;
@@ -50,23 +61,29 @@ export default function UsMap({ cities, onSelect }: { cities: CityCard[]; onSele
   const hovered = dots.find((d) => d.c.ticker === hover);
 
   return (
-    <div className="relative mt-5 rounded-xl border border-line bg-panel p-2">
-      <svg viewBox={`0 0 ${W} ${H}`} className="mx-auto max-h-[460px] w-full">
+    <div className="relative rounded-2xl border border-line bg-panel p-2">
+      <svg viewBox={`0 0 ${W} ${H}`} className="mx-auto w-full">
         <path d={nation} fill="#111821" />
         <path d={borders} fill="none" stroke="#1f2a36" strokeWidth="0.8" />
         {dots.map(({ c, x, y, certainty, edges }) => {
           const r = 5 + certainty * 11;
+          const isSel = c.ticker === selected;
+          const isDim = dimmed?.has(c.ticker) && !isSel;
           return (
             <g
               key={c.ticker}
               transform={`translate(${x},${y})`}
-              className="cursor-pointer"
+              className="cursor-pointer transition-opacity"
+              opacity={isDim ? 0.15 : 1}
+              role="button"
+              aria-label={`${c.name}, high so far ${c.observedMax ?? "unknown"}`}
               onMouseEnter={() => setHover(c.ticker)}
               onMouseLeave={() => setHover(null)}
               onClick={() => onSelect(c.ticker)}
             >
               <circle r={r + 6} fill={tempColor(c.observedMax)} opacity={0.12} />
               <circle r={r} fill={tempColor(c.observedMax)} opacity={0.85} stroke={edges ? "#ff7a3d" : "#07090d"} strokeWidth={edges ? 2.5 : 1} />
+              {isSel && <circle r={r + 5} fill="none" stroke="#e6edf3" strokeWidth={2} />}
             </g>
           );
         })}
@@ -97,7 +114,7 @@ export default function UsMap({ cities, onSelect }: { cities: CityCard[]; onSele
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-accent" /> market edge ≥ 5¢
         </span>
-        <span>click a city for detail</span>
+        <span>click a city for its stats</span>
       </div>
     </div>
   );

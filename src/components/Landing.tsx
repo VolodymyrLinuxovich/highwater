@@ -65,8 +65,8 @@ export function Instrument() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-1" role="tablist" aria-label="City">
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-wrap justify-center gap-1" role="tablist" aria-label="City">
           {options.map((o) => (
             <button
               key={o.city}
@@ -96,7 +96,7 @@ export function Instrument() {
         <HighwaterChart c={c} now={data.generatedAt} />
       </div>
 
-      <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted">
+      <p className="mx-auto mt-4 max-w-3xl text-center text-[15px] leading-relaxed text-muted">
         {c.observedMax != null ? (
           <>
             In {c.name} the high reached{" "}
@@ -178,12 +178,12 @@ export function Proof() {
   ];
   return (
     <div>
-      <div className="grid divide-line sm:grid-cols-3 sm:divide-x">
+      <div className="grid divide-line text-center sm:grid-cols-3 sm:divide-x">
         {items.map((i, n) => (
           <Reveal
             key={i.label}
             delay={n * 120}
-            className={`py-5 sm:py-1 ${n > 0 ? "border-t border-line sm:border-t-0 sm:pl-8" : ""} ${n < 2 ? "sm:pr-8" : ""}`}
+            className={`py-5 sm:py-1 ${n > 0 ? "border-t border-line sm:border-t-0" : ""} sm:px-6`}
           >
             <div
               className={`num text-5xl font-semibold tracking-tight ${i.tone}`}
@@ -197,7 +197,7 @@ export function Proof() {
         ))}
       </div>
       <Reveal delay={360}>
-        <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+        <p className="mx-auto mt-8 max-w-3xl text-center text-sm leading-relaxed text-muted">
           Replayed on {r.events} settled Gemini markets ({r.cities} cities,{" "}
           {r.period.start} to {r.period.end}), using only the reports available
           at each hour. Caveats: the historical forecasts behave like
@@ -222,7 +222,7 @@ export function LiveLine() {
   const s = data?.stats;
   const day = data?.cities?.[0]?.date;
   return (
-    <div className="flex min-h-5 flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+    <div className="flex min-h-5 flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-muted">
       <span className="flex items-center gap-2 text-good">
         <span className="hw-pulse inline-block h-1.5 w-1.5 rounded-full bg-good" />
         Live
@@ -270,7 +270,7 @@ export function CityTape() {
           />
         ))}
       </div>
-      <div className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-muted">
+      <div className="mt-3 flex flex-wrap justify-center gap-x-6 gap-y-1 text-xs text-muted sm:justify-between">
         <span>
           {cities.length} cities, west to east · coolest <span className="text-cool">{coolest.name} {Math.round(lo)}°</span>
         </span>

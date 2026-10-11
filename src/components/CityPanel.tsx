@@ -21,7 +21,7 @@ export default function CityPanel({ c, now }: { c: CityCard; now: number }) {
             {c.station} · {c.localTime} local · {c.hoursLeft}h of climate day left
           </p>
         </div>
-        <div className="text-right">
+        <div className="mr-9 text-right">
           <div className="num text-4xl font-semibold leading-none text-accent">
             {c.observedMax != null ? `${Math.round(c.observedMax)}°` : "—"}
           </div>

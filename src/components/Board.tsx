@@ -38,14 +38,15 @@ export default function Board() {
   const dimmed = new Set(all.filter((c) => !visible.includes(c)).map((c) => c.ticker));
   const suggestions = q ? visible.slice(0, 6) : [];
 
-  // Selected city, or a sensible default: the furthest-along city with ranges already ruled out.
-  const fallback =
-    [...all].sort(
-      (a, b) =>
-        b.quotes.filter((x) => x.status === "dead").length - a.quotes.filter((x) => x.status === "dead").length ||
-        b.dayProgress - a.dayProgress,
-    )[0] ?? null;
-  const current = all.find((c) => c.ticker === selected || c.city.toUpperCase() === selected?.toUpperCase()) ?? fallback;
+  // Nothing is selected until a city is clicked (or deep-linked with ?city=).
+  const current = selected ? (all.find((c) => c.ticker === selected || c.city.toUpperCase() === selected.toUpperCase()) ?? null) : null;
+
+  function close() {
+    setSelected(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("city");
+    window.history.replaceState(null, "", url);
+  }
 
   function select(id: string) {
     setSelected(id);
@@ -55,30 +56,29 @@ export default function Board() {
     if (city) url.searchParams.set("city", city);
     window.history.replaceState(null, "", url);
     // On narrow screens the panel sits below the map; bring it into view.
-    if (window.matchMedia("(max-width: 1023px)").matches) panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (window.matchMedia("(max-width: 1023px)").matches)
+      setTimeout(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   }
 
   return (
     <div>
-      <div className="pt-12 pb-8 text-center sm:pt-14">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Today&apos;s high, 49 cities</h1>
-        <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-          Pick a city on the map to see its stats: the high so far, how the day is tracking, and every Gemini contract with
-          Highwater&apos;s probability next to the market.
-        </p>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-6 pb-4">
+        <h1 className="text-xl font-semibold tracking-tight">
+          Today&apos;s high <span className="text-muted">· 49 cities</span>
+        </h1>
+        <div className="flex flex-wrap items-center gap-2">
           {data?.dates?.map((d) => (
             <button
               key={d}
               onClick={() => setDate(d)}
-              className={`num rounded-md border px-3 py-1.5 text-sm ${
+              className={`num rounded-md border px-2.5 py-1 text-xs ${
                 (date ?? data.cities?.[0]?.date) === d ? "border-accent text-accent" : "border-line text-muted hover:text-foreground"
               }`}
             >
               {d}
             </button>
           ))}
-          <button onClick={refresh} className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-foreground">
+          <button onClick={refresh} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-foreground">
             {loading ? "Refreshing…" : "Refresh"}
           </button>
         </div>
@@ -89,9 +89,7 @@ export default function Board() {
 
       {data && !data.error && (
         <>
-          <Stats data={data} />
-
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full sm:max-w-xs">
               <input
                 value={query}
@@ -136,13 +134,26 @@ export default function Board() {
             </div>
           </div>
 
-          <div className="mt-4 grid items-start gap-4 lg:grid-cols-[1.15fr_1fr]">
+          <div className={`mt-3 grid items-start gap-4 ${current ? "lg:grid-cols-[1.15fr_1fr]" : ""}`}>
             <div className="min-w-0 lg:sticky lg:top-20">
               <UsMap cities={all} onSelect={select} selected={current?.ticker ?? null} dimmed={dimmed} />
             </div>
-            <div ref={panelRef} className="min-w-0 scroll-mt-20">
-              {current ? <CityPanel c={current} now={data.generatedAt} /> : <p className="text-sm text-muted">No city selected.</p>}
-            </div>
+            {current && (
+              <div ref={panelRef} className="relative min-w-0 scroll-mt-20">
+                <button
+                  onClick={close}
+                  aria-label="Close city panel"
+                  className="absolute top-3 right-3 z-10 rounded-md border border-line bg-background/80 px-2 py-0.5 text-sm text-muted hover:text-foreground"
+                >
+                  ✕
+                </button>
+                <CityPanel c={current} now={data.generatedAt} />
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <Stats data={data} />
           </div>
 
           <p className="mt-6 text-center text-xs text-muted">

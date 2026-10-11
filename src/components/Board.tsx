@@ -47,8 +47,6 @@ export default function Board() {
     setSelected(id);
     setQuery("");
     // On narrow screens the panel sits below the map; bring it into view.
-    if (window.matchMedia("(max-width: 1023px)").matches)
-      setTimeout(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   }
 
   return (
@@ -125,24 +123,36 @@ export default function Board() {
             </div>
           </div>
 
-          <div className="relative mt-3">
+          <div className="mt-3">
             <UsMap cities={all} onSelect={select} selected={current?.ticker ?? null} dimmed={dimmed} />
-            {current && (
-              <div
+          </div>
+
+          {current && (
+            <div
+              className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-md"
+              onClick={close}
+              onKeyDown={(e) => e.key === "Escape" && close()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${current.name} details`}
+            >
+              <aside
                 ref={panelRef}
-                className={`relative mt-4 min-w-0 scroll-mt-20 lg:absolute lg:top-3 ${current.lon > -98 ? "lg:left-3" : "lg:right-3"} lg:mt-0 lg:max-h-[calc(100%-1.5rem)] lg:w-[460px] lg:overflow-y-auto lg:rounded-2xl lg:shadow-2xl lg:shadow-black/60`}
+                className="drawer-in relative h-full w-full max-w-[540px] overflow-y-auto border-l border-line bg-background p-3 sm:p-4"
+                onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={close}
+                  autoFocus
                   aria-label="Close city panel"
-                  className="absolute top-3 right-3 z-10 rounded-md border border-line bg-background/80 px-2 py-0.5 text-sm text-muted hover:text-foreground"
+                  className="absolute top-6 right-6 z-10 rounded-md border border-line bg-background/80 px-2 py-0.5 text-sm text-muted hover:text-foreground"
                 >
                   ✕
                 </button>
                 <CityPanel c={current} now={data.generatedAt} />
-              </div>
-            )}
-          </div>
+              </aside>
+            </div>
+          )}
 
           <div className="mt-6">
             <Stats data={data} />

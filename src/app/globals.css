@@ -140,3 +140,19 @@ body {
     transition: none;
   }
 }
+
+/* City drawer slides in from the right */
+.drawer-in {
+  animation: drawer-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer-in {
+    animation: none;
+  }
+}

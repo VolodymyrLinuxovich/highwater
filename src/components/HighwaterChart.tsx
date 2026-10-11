@@ -20,9 +20,17 @@ export default function HighwaterChart({ c, now, showList = true }: { c: CityCar
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Measure right away (a ResizeObserver only reports on the next frame), so
+    // phones never get a first render of the wide layout scaled down.
+    const measure = () => setWidth(Math.round(el.getBoundingClientRect().width) || 960);
+    const first = requestAnimationFrame(measure);
+    queueMicrotask(measure);
     const ro = new ResizeObserver(([e]) => setWidth(Math.round(e.contentRect.width)));
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      cancelAnimationFrame(first);
+      ro.disconnect();
+    };
   }, []);
 
   const wide = width >= 680;

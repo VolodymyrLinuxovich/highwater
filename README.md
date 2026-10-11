@@ -55,7 +55,7 @@ including the empty books.
 |------|-------|
 | **App** | Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 |
 | **Model** | Monte Carlo over 82 GFS + ECMWF ensemble members · empirical peak correction · bias from today's observations |
-| **Markets** | Gemini Prediction Markets API (public data, HMAC-signed sandbox orders) |
+| **Markets** | Gemini Prediction Markets API (public data, HMAC-signed sandbox orders, paper book on production books) |
 | **Weather data** | aviationweather.gov METARs · Open-Meteo ensembles · api.weather.gov stations · Iowa Environmental Mesonet (CLI + ASOS archives) |
 | **Payments** | x402 (v1, `exact`) · Agora AUSD (ERC-3009) on Base Sepolia · viem · `x402-fetch` · Blockscout |
 | **Map** | d3-geo · topojson · us-atlas |
@@ -186,6 +186,25 @@ forecast-only spread and the peak distribution were fitted on the same days. The
 
 ---
 
+## Paper Book on Gemini's Weather Markets
+
+Highwater does not stop at a price. Every minute it rests its two-sided quote on **every Gemini daily high contract**
+(about 320 a day, 49 cities) against Gemini's **real production order books**:
+
+- A quote fills only when Gemini's best ask drops to our bid, or Gemini's best bid rises to our ask.
+- One contract per fill, at most 3 per contract in either direction.
+- Every position is marked at Highwater's current fair value, so the panel shows fills, positions, P&L at fair and the
+  edge captured at each fill.
+- Nothing is sent to Gemini. The book is stored as one JSON per day in Vercel Blob, so it survives across serverless
+  instances.
+
+First update on 2026-10-11: 424 quotes resting on 322 contracts, only 4 of which had any Gemini quote. One crossed:
+**Miami 91°F to 92°F, bought YES at Gemini's 21¢ ask with fair value at 60¢.** Thin books plus a floor-aware model is
+exactly where mispricings like that sit. The panel is on the [live board](https://highwater-tau.vercel.app/board);
+the raw book is at `/api/paper`.
+
+---
+
 ## Agent API: Pay per Forecast in AUSD
 
 Trading bots don't want a subscription. They want one number right before they quote. Highwater sells each forecast per
@@ -212,8 +231,16 @@ reads AUSD transfers into the treasury from Base Sepolia's Blockscout, so every 
 ## Labs: Gemini Sandbox
 
 Gemini's sandbox lists crypto and commodity contracts but no weather markets. The Labs page applies the same question,
-where will it land at expiry, to the sandbox's crypto price contracts using Gemini spot and 2-hour realized volatility.
-Order buttons work only where a sandbox API key is configured.
+where will it land at expiry, to the sandbox's crypto price contracts using Gemini spot and 2-hour realized volatility,
+including the 5 and 15 minute Up/Down contracts. `POST /api/sandbox/quote` picks the 3 to 5 contracts with the widest
+gap between fair value and the sandbox book and quotes both sides at fair ± 3¢.
+
+Orders are signed per Gemini's API key docs (base64 payload in `X-GEMINI-PAYLOAD`, HMAC-SHA384, empty body) and match
+Gemini's own Go SDK field for field. Auth, roles and terms all pass, but on 2026-10-11 the sandbox rejected every
+prediction order: `POST /v1/prediction-markets/order` returned `422 UnknownInstrument` and `/order/batch` returned
+`503 "Prediction markets are not currently available"`. So each order still goes to Gemini first, and only that
+rejection turns it into a labeled **paper** order that fills when the live sandbox book crosses it. Without an API key,
+as on the public site, orders are paper from the start. Set `GEMINI_TRADE_MODE=live` to disable the fallback.
 
 ---
 
@@ -234,9 +261,14 @@ X402_PAY_TO=0x...        # treasury address
 X402_RELAYER_KEY=0x...   # pays gas for settlement
 AGENT_KEY=0x...          # demo buyer
 
-# Gemini sandbox trading (Labs)
+# Gemini sandbox trading (Labs). Without a key, orders run as paper orders.
 GEMINI_API_KEY=...
 GEMINI_API_SECRET=...
+# GEMINI_TRADE_MODE=auto        # auto (paper only when Gemini rejects), live, or paper
+# GEMINI_NONCE_MODE=incremental # only for keys created with incremental nonces
+
+# Paper book storage (Vercel Blob). Without it the book lives in memory.
+BLOB_READ_WRITE_TOKEN=...
 ```
 
 ```bash
@@ -258,7 +290,9 @@ npx tsx --env-file=.env.local scripts/agent.ts http://localhost:3000 NYC CHI MIA
 | `src/lib/engine.ts` | Bias, Monte Carlo, blend, bin probabilities, quotes |
 | `src/lib/board.ts` | Builds the 49-city board from all sources |
 | `src/lib/x402.ts` | x402 paywall: requirements, ERC-3009 verify, on-chain settlement |
-| `src/lib/crypto.ts`, `src/lib/gemini-trade.ts` | Labs: sandbox pricing and HMAC-signed orders |
+| `src/lib/paper-book.ts` | Paper market making on Gemini's production weather books, stored in Vercel Blob |
+| `src/lib/crypto.ts`, `src/lib/crypto-engine.ts` | Labs: sandbox crypto pricing (strike ladders and Up/Down contracts) |
+| `src/lib/gemini-trade.ts` | HMAC-signed Gemini orders, positions, terms, and the paper fallback |
 | `scripts/lib-replay.ts` | Shared replay: data loading, models, scoring |
 | `scripts/realcontracts.ts` | Scoring on settled Gemini markets, station-map check |
 | `scripts/backtest.ts` | Longer backtest, calibration, parameter estimates |
@@ -270,6 +304,7 @@ npx tsx --env-file=.env.local scripts/agent.ts http://localhost:3000 NYC CHI MIA
 
 - The city-to-station map follows the airport code, with explicit exceptions (Central Park for NYC, Midway for
   Chicago). It is verified against about 20 days of Gemini settlements per city.
-- Gemini's sandbox has no weather markets, so weather quotes are shown, not posted.
+- Gemini's sandbox has no weather markets, so weather quotes are paper traded against production books, not posted.
+- Gemini's sandbox rejected all prediction orders on 2026-10-11, so Labs orders fell back to paper.
 - Payments run on Base Sepolia testnet.
 - Not financial advice.

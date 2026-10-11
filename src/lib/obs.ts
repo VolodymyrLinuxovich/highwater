@@ -24,14 +24,26 @@ export function metarSixHourMaxC(raw: string): number | null {
 
 type AwcMetar = { icaoId: string; obsTime: number; rawOb: string };
 
-// One batched call to aviationweather.gov for all stations (routine + specials).
+// aviationweather.gov returns at most 400 rows per request, and a station
+// files ~30-45 reports in 36 hours. Query in groups small enough to stay
+// under the cap so every station gets its full climate day.
+const AWC_GROUP = 6;
+
+async function fetchMetars(ids: string[]): Promise<AwcMetar[]> {
+  const url = `https://aviationweather.gov/api/data/metar?ids=${ids.join(",")}&format=json&hours=36`;
+  const r = await fetch(url, { cache: "no-store", headers: { "User-Agent": "highwater-hackathon/0.1" } });
+  if (!r.ok) throw new Error(`awc metar: HTTP ${r.status}`);
+  const rows = (await r.json()) as AwcMetar[];
+  if (rows.length >= 400) console.warn(`awc metar: ${ids.length} stations hit the 400-row cap`);
+  return rows;
+}
+
 export function recentMetars(ids: string[]): Promise<Map<string, { obs: Obs[]; sixMax: SixHourMax[] }>> {
   const key = `awc:${[...ids].sort().join(",")}`;
   return cached(key, 4 * 60_000, async () => {
-    const url = `https://aviationweather.gov/api/data/metar?ids=${ids.join(",")}&format=json&hours=36`;
-    const r = await fetch(url, { cache: "no-store", headers: { "User-Agent": "highwater-hackathon/0.1" } });
-    if (!r.ok) throw new Error(`awc metar: HTTP ${r.status}`);
-    const rows = (await r.json()) as AwcMetar[];
+    const groups: string[][] = [];
+    for (let i = 0; i < ids.length; i += AWC_GROUP) groups.push(ids.slice(i, i + AWC_GROUP));
+    const rows = (await Promise.all(groups.map(fetchMetars))).flat();
     const out = new Map<string, { obs: Obs[]; sixMax: SixHourMax[] }>();
     for (const id of ids) out.set(id, { obs: [], sixMax: [] });
     for (const m of rows) {

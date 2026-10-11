@@ -26,6 +26,7 @@
   --color-bad: var(--bad);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
 }
 
 body {
@@ -36,4 +37,53 @@ body {
 
 .num {
   font-variant-numeric: tabular-nums;
+}
+
+/* Instrument drawing on the overview: the observed line, then the high-water mark. */
+.hw-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hw-draw 1.6s ease-out forwards;
+}
+.hw-draw-late {
+  animation-delay: 0.5s;
+}
+.hw-pulse {
+  animation: hw-pulse 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes hw-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes hw-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Faint radar grid behind the hero instrument */
+.radar-grid {
+  background-image: radial-gradient(circle, #1a2430 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hw-draw {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+  .hw-pulse,
+  .animate-ping,
+  .animate-pulse {
+    animation: none;
+  }
 }

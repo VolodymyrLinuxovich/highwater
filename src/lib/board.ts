@@ -13,6 +13,7 @@ export type CityCard = {
   station: string;
   lat: number;
   lon: number;
+  timeZone: string;
   date: string;
   localTime: string;
   dayProgress: number; // 0..1 through the climate day
@@ -73,6 +74,7 @@ export async function buildBoard(opts: { date?: string } = {}): Promise<Board> {
       station: meta.id,
       lat: meta.lat,
       lon: meta.lon,
+      timeZone: meta.timeZone,
       date,
       localTime: new Intl.DateTimeFormat("en-US", { timeZone: meta.timeZone, hour: "numeric", minute: "2-digit" }).format(now),
       dayProgress: Math.min(1, Math.max(0, (now - start) / (end - start))),

@@ -5,73 +5,95 @@ import { useEffect, useState } from "react";
 import type { CityCard } from "@/lib/board";
 import { pct, shortLabel } from "@/lib/format";
 import { useBoard } from "@/lib/useBoard";
+import HighwaterChart from "./HighwaterChart";
 
-// A real city from the live board, so visitors see the product immediately.
-export function CityPreview() {
+const FEATURED = ["NYC", "CHI", "MIA", "DEN", "LA", "SEA", "ATL", "DFW", "PHX", "BOS"];
+
+// The hero instrument: one real city's day, switchable between a few live cities.
+export function Instrument() {
   const { data } = useBoard();
-  const cities = data?.cities ?? [];
-  const c: CityCard | undefined = cities.find((x) => x.city === "NYC") ?? [...cities].sort((a, b) => b.dayProgress - a.dayProgress)[0];
+  const [pick, setPick] = useState<string | null>(null);
+  const cities = (data?.cities ?? []).filter((c) => FEATURED.includes(c.city));
+  const options = FEATURED.map((code) => cities.find((c) => c.city === code)).filter((c): c is CityCard => !!c).slice(0, 5);
+  const fallback = options.find((c) => c.quotes.some((q) => q.status === "dead")) ?? options[0];
+  const c = options.find((o) => o.city === pick) ?? fallback;
 
   if (data?.error) {
     return (
-      <div className="rounded-2xl border border-line bg-panel p-6 text-sm text-muted">
-        The live preview is unavailable right now. <Link className="text-accent underline" href="/board">Open the live board</Link>.
+      <p className="py-16 text-center text-sm text-muted">
+        Live data is unavailable right now.{" "}
+        <Link className="text-accent underline" href="/board">
+          Try the live board
+        </Link>
+        .
+      </p>
+    );
+  }
+  if (!c || !data) {
+    return (
+      <div className="flex h-[420px] items-center justify-center text-sm text-muted">
+        Reading weather reports and 82 forecast runs…
       </div>
     );
   }
-  if (!c) return <div className="h-[340px] animate-pulse rounded-2xl border border-line bg-panel" />;
 
-  const ranked = [...c.quotes].sort((a, b) => b.fair - a.fair);
-  const shown = ranked.slice(0, 4).sort((a, b) => (a.bin.lo ?? -999) - (b.bin.lo ?? -999));
   const dead = c.quotes.filter((q) => q.status === "dead").length;
+  const lead = [...c.quotes].sort((a, b) => b.fair - a.fair)[0];
+  const at = c.observedAt
+    ? new Intl.DateTimeFormat("en-US", { timeZone: c.timeZone, hour: "numeric", minute: "2-digit" }).format(c.observedAt)
+    : null;
 
   return (
-    <div className="rounded-2xl border border-line bg-panel p-5 shadow-2xl shadow-black/40 sm:p-6">
-      <div className="flex items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-good">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-good opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-good" />
-          </span>
-          Live
-        </span>
-        <span className="num text-muted">
-          {c.station} · {c.localTime} local
-        </span>
-      </div>
-      <div className="mt-4 flex items-end justify-between gap-4">
-        <div>
-          <div className="text-sm text-muted">Highest temperature today in</div>
-          <div className="text-2xl font-semibold tracking-tight">{c.name}</div>
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-1" role="tablist" aria-label="City">
+          {options.map((o) => (
+            <button
+              key={o.city}
+              role="tab"
+              aria-selected={o === c}
+              onClick={() => setPick(o.city)}
+              className={`rounded-full px-3 py-1 text-sm transition ${
+                o === c ? "bg-foreground text-background" : "text-muted hover:text-foreground"
+              }`}
+            >
+              {o.name} <span className="num opacity-60">{o.observedMax != null ? `${Math.round(o.observedMax)}°` : ""}</span>
+            </button>
+          ))}
         </div>
-        <div className="text-right">
-          <div className="num text-4xl font-semibold leading-none text-accent">
-            {c.observedMax != null ? `${Math.round(c.observedMax)}°` : "—"}
-          </div>
-          <div className="mt-1 text-[10px] uppercase tracking-wider text-muted">recorded so far</div>
-        </div>
+        <span className="flex items-center gap-2 text-xs text-muted">
+          <span className="hw-pulse inline-block h-1.5 w-1.5 rounded-full bg-good" />
+          Live · {c.station} · Gemini {c.ticker}
+        </span>
       </div>
 
-      <div className="mt-5 space-y-2.5">
-        {shown.map((q) => (
-          <div key={q.symbol} className="grid grid-cols-[84px_1fr_40px] items-center gap-3 text-sm">
-            <span className="num">{shortLabel(q.label)}</span>
-            <div className="h-2 rounded-full bg-line/70">
-              <div className={`h-full rounded-full ${q === ranked[0] ? "bg-accent" : "bg-accent/50"}`} style={{ width: pct(q.fair) }} />
-            </div>
-            <span className={`num text-right ${q === ranked[0] ? "font-semibold" : "text-muted"}`}>{pct(q.fair)}</span>
-          </div>
-        ))}
+      <div className="mt-4">
+        <HighwaterChart c={c} now={data.generatedAt} />
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-line/60 pt-4 text-xs text-muted">
-        <span>
-          {pct(c.dayProgress)} of the climate day done · {dead} contract{dead === 1 ? "" : "s"} already impossible
-        </span>
-        <Link href={`/board?city=${c.city}`} className="text-accent hover:underline">
-          See every contract →
+      <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted">
+        {c.observedMax != null ? (
+          <>
+            In {c.name} the high reached <span className="num text-foreground">{c.observedMax}°F</span>
+            {at ? ` at ${at}` : ""}.{" "}
+            {dead > 0 ? (
+              <>
+                <span className="text-foreground">
+                  {dead} of {c.quotes.length} ranges
+                </span>{" "}
+                can no longer win.{" "}
+              </>
+            ) : (
+              "No range is ruled out yet. "
+            )}
+          </>
+        ) : null}
+        Highwater gives <span className="num text-foreground">{shortLabel(lead.label)}</span> a{" "}
+        <span className="num text-accent">{pct(lead.fair)}</span> chance, with {c.hoursLeft}h of the climate day left.{" "}
+        <Link href={`/board?city=${c.city}`} className="whitespace-nowrap text-accent hover:underline">
+          Every contract →
         </Link>
-      </div>
+      </p>
     </div>
   );
 }
@@ -79,13 +101,14 @@ export function CityPreview() {
 type Real = {
   events: number;
   cities: number;
+  period: { start: string; end: string };
   stationCheck: { agree: number }[];
   byAsOfHour: { hour: number; nowcast: { brier: number }; forecastOnly: { brier: number } }[];
   dead: { ruledOut: number; resolvedNo: number; withTruncatedFloor?: { ruledOut: number; resolvedNo: number } };
 };
 
-// Headline numbers, computed from public/realcontracts.json rather than typed in.
-export function EvidenceStrip() {
+// Proof, computed from public/realcontracts.json.
+export function Proof() {
   const [r, setR] = useState<Real | null>(null);
   useEffect(() => {
     fetch("/realcontracts.json")
@@ -93,27 +116,40 @@ export function EvidenceStrip() {
       .then(setR)
       .catch(() => setR(null));
   }, []);
-  if (!r) return <div className="h-[120px] animate-pulse rounded-2xl border border-line bg-panel" />;
+  if (!r) return <div className="h-[140px]" />;
   const at18 = r.byAsOfHour.find((h) => h.hour === 18) ?? r.byAsOfHour.at(-1)!;
   const dead = r.dead.withTruncatedFloor ?? r.dead;
   const agree = r.stationCheck.filter((s) => s.agree === 1).length;
   const items = [
-    { big: `${Math.round((1 - at18.nowcast.brier / at18.forecastOnly.brier) * 100)}%`, label: "lower error than the forecast alone at 6pm", tone: "text-good" },
-    { big: `${dead.resolvedNo.toLocaleString("en-US")} / ${dead.ruledOut.toLocaleString("en-US")}`, label: "contracts called impossible that settled NO", tone: "text-accent" },
-    { big: `${agree} / ${r.stationCheck.length}`, label: "cities whose weather station matches every Gemini settlement", tone: "text-cool" },
+    {
+      big: `${Math.round((1 - at18.nowcast.brier / at18.forecastOnly.brier) * 100)}%`,
+      label: `lower Brier score than the forecast alone at 6pm (${at18.nowcast.brier.toFixed(3)} vs ${at18.forecastOnly.brier.toFixed(3)})`,
+      tone: "text-good",
+    },
+    {
+      big: `${dead.resolvedNo.toLocaleString("en-US")}/${dead.ruledOut.toLocaleString("en-US")}`,
+      label: "contracts called impossible that settled NO",
+      tone: "text-accent",
+    },
+    { big: `${agree}/${r.stationCheck.length}`, label: "cities where our station matched every Gemini settlement", tone: "text-cool" },
   ];
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
-      {items.map((i) => (
-        <div key={i.label} className="rounded-2xl border border-line bg-panel p-5">
-          <div className={`num text-3xl font-semibold ${i.tone}`}>{i.big}</div>
-          <div className="mt-1 text-sm text-muted">{i.label}</div>
-        </div>
-      ))}
-      <p className="text-xs text-muted sm:col-span-3">
-        Replayed on {r.events} settled Gemini markets (one per city per day) in {r.cities} cities. Error is the Brier score.{" "}
-        <Link href="/results" className="text-accent hover:underline">
-          Method, full results and caveats →
+    <div>
+      <div className="grid divide-line sm:grid-cols-3 sm:divide-x">
+        {items.map((i, n) => (
+          <div key={i.label} className={`py-5 sm:py-1 ${n > 0 ? "border-t border-line sm:border-t-0 sm:pl-8" : ""} ${n < 2 ? "sm:pr-8" : ""}`}>
+            <div className={`num text-5xl font-semibold tracking-tight ${i.tone}`}>{i.big}</div>
+            <div className="mt-2 text-sm leading-snug text-muted">{i.label}</div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+        Replayed on {r.events} settled Gemini markets ({r.cities} cities, {r.period.start} to {r.period.end}), using only the
+        reports available at each hour. Caveats: the historical forecasts behave like short-range runs, which flatters the
+        baseline; some parameters were fitted on the same days; before noon Highwater is no better than the forecast, so it
+        leans on it.{" "}
+        <Link href="/results" className="whitespace-nowrap text-accent hover:underline">
+          Full results →
         </Link>
       </p>
     </div>

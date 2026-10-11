@@ -66,15 +66,8 @@ export default function AgentApi() {
   const lead = run?.forecast ? [...run.forecast.contracts].sort((a, b) => b.fair - a.fair)[0] : null;
 
   return (
-    <section className="mt-14">
-      <h2 className="text-lg font-semibold tracking-tight">Agent API: pay per forecast in AUSD</h2>
-      <p className="mt-1 max-w-3xl text-sm text-muted">
-        Trading bots don&apos;t want a subscription; they want one number right before they quote. Every forecast is sold over{" "}
-        <span className="text-foreground">x402</span>: the endpoint answers <span className="num">402 Payment Required</span>, the
-        agent signs a gasless AUSD transfer (ERC-3009), and Highwater settles it on Base Sepolia before returning the data.
-      </p>
-
-      <div className="mt-4 grid gap-3 lg:grid-cols-[1.2fr_1fr]">
+    <section>
+      <div className="grid gap-3 lg:grid-cols-[1.2fr_1fr]">
         <div className="rounded-xl border border-line bg-panel p-5">
           <div className="grid gap-3 sm:grid-cols-2">
             <Endpoint path="/api/paid/forecast?city=NYC" price={status.prices.forecast} what="one city: distribution, fair values, book" />

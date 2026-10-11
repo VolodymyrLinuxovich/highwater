@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import type { CryptoEvent } from "@/lib/crypto";
 
 type Desk = { tradingEnabled: boolean; events: CryptoEvent[]; staleSince?: number | null; orders: unknown; ordersError: string | null; error?: string };
-type Placed = { label: string; event: string; side: string; outcome: string; price: number; fair: number; gap: number; ok: boolean; order?: { orderId?: number; status?: string }; error?: string };
+type Placed = { label: string; event: string; side: string; outcome: string; price: number; fair: number; gap: number; ok: boolean; order?: { orderId?: number; status?: string; paper?: boolean; geminiRejection?: string }; error?: string };
 
 const pct = (p: number) => `${Math.round(p * 100)}%`;
 const cents = (p: number | null) => (p == null ? "—" : `${Math.round(p * 100)}¢`);
+const rejectReason = (r?: string) => r?.match(/"message":"(?:Order rejected: Order could not be placed: )?([^"]+)"/)?.[1] ?? "rejected";
+const PaperTag = () => <span className="rounded border border-amber-400/60 px-1 text-[10px] font-semibold uppercase tracking-wide text-amber-400">paper</span>;
 
 export default function SandboxDesk() {
   const [desk, setDesk] = useState<Desk | null>(null);
@@ -62,17 +64,15 @@ export default function SandboxDesk() {
 
   if (!desk) return null;
   const events = (desk.events ?? []).filter((e) => e.quotes.some((q) => q.market.bid != null || q.market.ask != null)).slice(0, 6);
-  const orders = Array.isArray(desk.orders) ? desk.orders : ((desk.orders as { orders?: unknown[] } | null)?.orders ?? []);
+  const orders = (Array.isArray(desk.orders) ? desk.orders : ((desk.orders as { orders?: unknown[] } | null)?.orders ?? [])) as { paper?: boolean }[];
+  const paperOrders = orders.filter((o) => o.paper).length;
+  const anyPaper = paperOrders > 0 || (placed ?? []).some((p) => p.order?.paper);
 
   return (
-    <section className="mt-14">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">Sandbox desk: live orders on Gemini</h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted">
-            Gemini&apos;s sandbox lists crypto price contracts, not weather. The same &ldquo;where will it land&rdquo; engine prices
-            them from Gemini spot and 2-hour realized volatility, then trades the gaps with real sandbox orders.
-          </p>
+    <section>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="text-sm text-muted">
+          Sandbox crypto contracts closest to expiry, priced from Gemini spot and 2-hour realized volatility.
         </div>
         <div className="flex gap-2">
           <button
@@ -97,6 +97,13 @@ export default function SandboxDesk() {
       )}
       {!desk.tradingEnabled && <p className="mt-2 text-xs text-muted">Trading is off: no sandbox API key configured on this deployment.</p>}
       {msg && <p className="mt-2 text-sm text-accent">{msg}</p>}
+      {anyPaper && (
+        <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
+          <PaperTag />
+          Gemini&apos;s sandbox is rejecting prediction orders right now, so each order is sent to Gemini first and, when rejected,
+          kept as a paper order that fills only when the live sandbox book crosses it.
+        </p>
+      )}
 
       {placed && placed.length > 0 && (
         <div className="mt-3 rounded-lg border border-accent/40 bg-accent/5 p-3 text-sm">
@@ -109,7 +116,13 @@ export default function SandboxDesk() {
               <span className="text-muted">
                 fair {pct(p.fair)} · gap {Math.round(p.gap * 100)}¢
               </span>
-              <span className="text-muted">{p.ok ? `order ${p.order?.orderId ?? "?"} ${p.order?.status ?? ""}` : p.error}</span>
+              {p.ok && p.order?.paper ? (
+                <span className="flex items-center gap-1.5 text-muted">
+                  <PaperTag /> order {p.order.orderId} {p.order.status} · Gemini: {rejectReason(p.order.geminiRejection)}
+                </span>
+              ) : (
+                <span className="text-muted">{p.ok ? `order ${p.order?.orderId ?? "?"} ${p.order?.status ?? ""}` : p.error}</span>
+              )}
             </div>
           ))}
         </div>
@@ -156,7 +169,9 @@ export default function SandboxDesk() {
 
       {desk.tradingEnabled && (
         <p className="mt-3 text-xs text-muted">
-          {desk.ordersError ? `Orders: ${desk.ordersError}` : `${orders.length} active sandbox orders`}
+          {desk.ordersError
+            ? `Orders: ${desk.ordersError}`
+            : `${orders.length - paperOrders} active orders on Gemini${paperOrders ? ` · ${paperOrders} paper` : ""}`}
         </p>
       )}
     </section>

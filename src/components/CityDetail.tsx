@@ -1,7 +1,7 @@
 "use client";
 
 import type { CityCard } from "@/lib/board";
-import { shortLabel } from "./Dashboard";
+import { shortLabel } from "@/lib/format";
 
 const pct = (p: number) => `${(p * 100).toFixed(p < 0.1 && p > 0 ? 1 : 0)}%`;
 const cents = (p: number | null) => (p == null ? "—" : `${Math.round(p * 100)}¢`);

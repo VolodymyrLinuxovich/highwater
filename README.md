@@ -43,7 +43,7 @@ settled YES. Lower Brier is better.
 "Floor only" just cuts the forecast distribution at the high so far. It explains about half of the gain.
 
 - **Impossible means impossible.** Of 2,345 contracts the floor ruled out, all 2,345 settled NO. Rounding the METAR
-  max instead of truncating it produced one wrong call (Anchorage, 10/05), so the engine truncates.
+  max instead of truncating it produced one wrong call (Anchorage, 10/04), so the engine truncates.
 - **The station map is right.** For all 49 cities, the official CLI high at our mapped station falls in the contract
   Gemini settled YES on every day checked. Nearby stations don't: LaGuardia matches NYC 15% of the time, O'Hare
   matches Chicago 50%.

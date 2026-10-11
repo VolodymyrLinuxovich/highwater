@@ -58,6 +58,37 @@ to the full nowcast at 12:00.
 Caveats: the historical forecasts are stitched short-lead runs, which flatters the baseline. The forecast-only spread
 and the unobserved-peak distribution were fitted on the same days.
 
+## Agent API: pay per forecast in AUSD (x402)
+
+Trading bots don't want a subscription. They want one number right before they quote. Highwater sells each forecast
+per call over [x402](https://x402.org), paid in Agora's AUSD on Base Sepolia.
+
+| Endpoint                          | Price      | Returns                                                     |
+| --------------------------------- | ---------- | ----------------------------------------------------------- |
+| `GET /api/paid/forecast?city=NYC` | 0.005 AUSD | distribution of the final high, fair value per contract, book |
+| `GET /api/paid/board`             | 0.05 AUSD  | the same for all 49 cities                                  |
+
+1. **The ask.** An unpaid request gets `402 Payment Required` with standard x402 v1 requirements: scheme `exact`,
+   network `base-sepolia`, asset AUSD (`0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC`), and EIP-712 domain
+   `Agora Dollar` / `1`.
+2. **The payment.** The agent signs an ERC-3009 `TransferWithAuthorization`. It needs no ETH, only AUSD.
+3. **The check.** Highwater verifies the signature, recipient, amount, validity window, unused nonce and balance.
+4. **Settlement.** Highwater submits `transferWithAuthorization` from its relayer wallet, waits for the receipt, then
+   returns the data with an `X-PAYMENT-RESPONSE` header carrying the transaction hash.
+
+Any stock x402 client works. `scripts/agent.ts` uses `x402-fetch` unchanged:
+
+```bash
+npx tsx --env-file=.env.local scripts/fund-agent.ts                 # faucet AUSD to the agent (relayer pays gas)
+npx tsx --env-file=.env.local scripts/agent.ts http://localhost:3000 NYC CHI MIA
+```
+
+The dashboard's revenue panel reads AUSD transfers into the treasury from Base Sepolia's Blockscout, so every payment
+it shows is on-chain.
+
+Settings (`.env.local`, test wallets only): `X402_PAY_TO` (treasury), `X402_RELAYER_KEY` (pays gas for settlement),
+`AGENT_KEY` (the demo buyer).
+
 ## Sandbox desk
 
 Gemini's sandbox lists crypto and commodity contracts but no weather markets. So the desk applies the same question,
@@ -92,13 +123,15 @@ GEMINI_API_SECRET=...
 | `src/lib/engine.ts`           | Bias, Monte Carlo, blend, bin probabilities, quotes                |
 | `src/lib/crypto.ts`           | Sandbox crypto contracts priced from spot and realized vol         |
 | `src/lib/gemini-trade.ts`     | HMAC-signed prediction market orders                               |
+| `src/lib/x402.ts`             | x402 paywall: requirements, ERC-3009 verify, on-chain settlement   |
+| `scripts/agent.ts`            | Trading agent that buys forecasts over x402                        |
 | `scripts/lib-replay.ts`       | Shared replay: data loading, nowcast and baseline models, scoring  |
 | `scripts/backtest.ts`         | Synthetic-bin backtest, calibration, parameter estimates           |
 | `scripts/realcontracts.ts`    | Scoring on settled Gemini contracts, station-map check             |
 
 ## Data sources
 
-Gemini Prediction Markets API (public market data, sandbox trading), aviationweather.gov METARs, Open-Meteo ensemble
+Gemini Prediction Markets API (public market data, sandbox trading), Agora AUSD on Base Sepolia, aviationweather.gov METARs, Open-Meteo ensemble
 and historical forecast APIs, api.weather.gov station metadata, and the Iowa Environmental Mesonet ASOS and CLI
 archives.
 

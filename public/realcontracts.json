@@ -1,0 +1,714 @@
+{
+  "generatedAt": "2026-10-11T22:02:40.811Z",
+  "period": {
+    "start": "2026-09-21",
+    "end": "2026-10-10"
+  },
+  "events": 978,
+  "eventsLoaded": 979,
+  "cities": 49,
+  "stationCheck": [
+    {
+      "city": "ABQ",
+      "station": "KABQ",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KABQ"
+    },
+    {
+      "city": "ANC",
+      "station": "PANC",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "PANC"
+    },
+    {
+      "city": "ATL",
+      "station": "KATL",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KATL"
+    },
+    {
+      "city": "AUS",
+      "station": "KAUS",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KAUS"
+    },
+    {
+      "city": "BHM",
+      "station": "KBHM",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KBHM"
+    },
+    {
+      "city": "BNA",
+      "station": "KBNA",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KBNA"
+    },
+    {
+      "city": "BOS",
+      "station": "KBOS",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KBOS"
+    },
+    {
+      "city": "BUF",
+      "station": "KBUF",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KBUF"
+    },
+    {
+      "city": "BWI",
+      "station": "KBWI",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KBWI"
+    },
+    {
+      "city": "CHI",
+      "station": "KMDW",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMDW"
+    },
+    {
+      "city": "CLE",
+      "station": "KCLE",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KCLE"
+    },
+    {
+      "city": "CMH",
+      "station": "KCMH",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KCMH"
+    },
+    {
+      "city": "CVG",
+      "station": "KCVG",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KCVG"
+    },
+    {
+      "city": "DCA",
+      "station": "KDCA",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KDCA"
+    },
+    {
+      "city": "DEN",
+      "station": "KDEN",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KDEN"
+    },
+    {
+      "city": "DFW",
+      "station": "KDFW",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KDFW"
+    },
+    {
+      "city": "DTW",
+      "station": "KDTW",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KDTW"
+    },
+    {
+      "city": "HOU",
+      "station": "KHOU",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KHOU"
+    },
+    {
+      "city": "IND",
+      "station": "KIND",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KIND"
+    },
+    {
+      "city": "JAX",
+      "station": "KJAX",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KJAX"
+    },
+    {
+      "city": "LA",
+      "station": "KLAX",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KLAX"
+    },
+    {
+      "city": "LAS",
+      "station": "KLAS",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KLAS"
+    },
+    {
+      "city": "MCI",
+      "station": "KMCI",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMCI"
+    },
+    {
+      "city": "MCO",
+      "station": "KMCO",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMCO"
+    },
+    {
+      "city": "MEM",
+      "station": "KMEM",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMEM"
+    },
+    {
+      "city": "MIA",
+      "station": "KMIA",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMIA"
+    },
+    {
+      "city": "MKE",
+      "station": "KMKE",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMKE"
+    },
+    {
+      "city": "MSP",
+      "station": "KMSP",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMSP"
+    },
+    {
+      "city": "MSY",
+      "station": "KMSY",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KMSY"
+    },
+    {
+      "city": "NYC",
+      "station": "KNYC",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KNYC"
+    },
+    {
+      "city": "OKC",
+      "station": "KOKC",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KOKC"
+    },
+    {
+      "city": "OMA",
+      "station": "KOMA",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KOMA"
+    },
+    {
+      "city": "PDX",
+      "station": "KPDX",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KPDX"
+    },
+    {
+      "city": "PHL",
+      "station": "KPHL",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KPHL"
+    },
+    {
+      "city": "PHX",
+      "station": "KPHX",
+      "agree": 1,
+      "n": 19,
+      "misses": [],
+      "replayStation": "KPHX"
+    },
+    {
+      "city": "PIT",
+      "station": "KPIT",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KPIT"
+    },
+    {
+      "city": "RDU",
+      "station": "KRDU",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KRDU"
+    },
+    {
+      "city": "RIC",
+      "station": "KRIC",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KRIC"
+    },
+    {
+      "city": "SAC",
+      "station": "KSAC",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSAC"
+    },
+    {
+      "city": "SAN",
+      "station": "KSAN",
+      "agree": 1,
+      "n": 19,
+      "misses": [],
+      "replayStation": "KSAN"
+    },
+    {
+      "city": "SAT",
+      "station": "KSAT",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSAT"
+    },
+    {
+      "city": "SDF",
+      "station": "KSDF",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSDF"
+    },
+    {
+      "city": "SEA",
+      "station": "KSEA",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSEA"
+    },
+    {
+      "city": "SFO",
+      "station": "KSFO",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSFO"
+    },
+    {
+      "city": "SLC",
+      "station": "KSLC",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSLC"
+    },
+    {
+      "city": "STL",
+      "station": "KSTL",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KSTL"
+    },
+    {
+      "city": "TPA",
+      "station": "KTPA",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KTPA"
+    },
+    {
+      "city": "TUL",
+      "station": "KTUL",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KTUL"
+    },
+    {
+      "city": "TUS",
+      "station": "KTUS",
+      "agree": 1,
+      "n": 20,
+      "misses": [],
+      "replayStation": "KTUS"
+    }
+  ],
+  "controlAlternates": [
+    {
+      "city": "NYC",
+      "station": "KLGA",
+      "agree": 0.15,
+      "n": 20
+    },
+    {
+      "city": "NYC",
+      "station": "KJFK",
+      "agree": 0.25,
+      "n": 20
+    },
+    {
+      "city": "NYC",
+      "station": "KEWR",
+      "agree": 0.1,
+      "n": 20
+    },
+    {
+      "city": "CHI",
+      "station": "KORD",
+      "agree": 0.5,
+      "n": 20
+    },
+    {
+      "city": "LA",
+      "station": "KCQT",
+      "agree": 0,
+      "n": 0
+    },
+    {
+      "city": "LA",
+      "station": "KLGB",
+      "agree": 0.3,
+      "n": 20
+    },
+    {
+      "city": "LA",
+      "station": "KBUR",
+      "agree": 0.3,
+      "n": 20
+    },
+    {
+      "city": "AUS",
+      "station": "KATT",
+      "agree": 0.8,
+      "n": 20
+    },
+    {
+      "city": "HOU",
+      "station": "KIAH",
+      "agree": 0.15,
+      "n": 20
+    },
+    {
+      "city": "HOU",
+      "station": "KSGR",
+      "agree": 0,
+      "n": 0
+    },
+    {
+      "city": "SAC",
+      "station": "KSMF",
+      "agree": 0.6,
+      "n": 20
+    },
+    {
+      "city": "DFW",
+      "station": "KDAL",
+      "agree": 0,
+      "n": 0
+    },
+    {
+      "city": "DCA",
+      "station": "KIAD",
+      "agree": 0.45,
+      "n": 20
+    },
+    {
+      "city": "LAS",
+      "station": "KHND",
+      "agree": 0,
+      "n": 0
+    },
+    {
+      "city": "LAS",
+      "station": "KVGT",
+      "agree": 0.65,
+      "n": 20
+    },
+    {
+      "city": "SFO",
+      "station": "KOAK",
+      "agree": 0.25,
+      "n": 20
+    },
+    {
+      "city": "SFO",
+      "station": "KSJC",
+      "agree": 0,
+      "n": 20
+    },
+    {
+      "city": "SAN",
+      "station": "KNKX",
+      "agree": 0,
+      "n": 0
+    },
+    {
+      "city": "SAN",
+      "station": "KMYF",
+      "agree": 0.105,
+      "n": 19
+    }
+  ],
+  "byAsOfHour": [
+    {
+      "hour": 12,
+      "n": 978,
+      "nowcast": {
+        "brier": 0.427,
+        "logLoss": 0.729,
+        "acc": 0.686,
+        "pWin": 0.559
+      },
+      "floorOnly": {
+        "brier": 0.45,
+        "logLoss": 0.783,
+        "acc": 0.675,
+        "pWin": 0.531
+      },
+      "forecastOnly": {
+        "brier": 0.477,
+        "logLoss": 0.848,
+        "acc": 0.653,
+        "pWin": 0.503
+      }
+    },
+    {
+      "hour": 15,
+      "n": 978,
+      "nowcast": {
+        "brier": 0.338,
+        "logLoss": 0.549,
+        "acc": 0.733,
+        "pWin": 0.65
+      },
+      "floorOnly": {
+        "brier": 0.39,
+        "logLoss": 0.661,
+        "acc": 0.71,
+        "pWin": 0.596
+      },
+      "forecastOnly": {
+        "brier": 0.477,
+        "logLoss": 0.848,
+        "acc": 0.653,
+        "pWin": 0.503
+      }
+    },
+    {
+      "hour": 18,
+      "n": 978,
+      "nowcast": {
+        "brier": 0.306,
+        "logLoss": 0.492,
+        "acc": 0.756,
+        "pWin": 0.696
+      },
+      "floorOnly": {
+        "brier": 0.377,
+        "logLoss": 0.642,
+        "acc": 0.717,
+        "pWin": 0.608
+      },
+      "forecastOnly": {
+        "brier": 0.477,
+        "logLoss": 0.848,
+        "acc": 0.653,
+        "pWin": 0.503
+      }
+    }
+  ],
+  "dead": {
+    "ruledOut": 2351,
+    "resolvedNo": 2350,
+    "exceptions": [
+      {
+        "event": "WXHIGH-ANC-2610050359",
+        "contract": "41TO42",
+        "firstRuledOutAt": 15,
+        "floor": 43,
+        "observedMax": 42.8,
+        "cliHigh": 42,
+        "station": "PANC"
+      }
+    ],
+    "byHour": [
+      {
+        "hour": 12,
+        "ruledOut": 1237,
+        "resolvedNo": 1237
+      },
+      {
+        "hour": 15,
+        "ruledOut": 2279,
+        "resolvedNo": 2278
+      },
+      {
+        "hour": 18,
+        "ruledOut": 2351,
+        "resolvedNo": 2350
+      }
+    ],
+    "withTruncatedFloor": {
+      "ruledOut": 2345,
+      "resolvedNo": 2345
+    },
+    "floorCheck": {
+      "stationDays": 978,
+      "cliBelowRoundedMetarMax": 1,
+      "cliBelowTruncatedMetarMax": 0,
+      "cases": [
+        {
+          "event": "WXHIGH-ANC-2610050359",
+          "station": "PANC",
+          "date": "2026-10-04",
+          "metarMax": 42.8,
+          "cliHigh": 42
+        }
+      ]
+    },
+    "note": "ruledOut/resolvedNo count unique contracts whose upper bound was below round(max METAR so far) at any as-of hour; byHour counts per (event, hour)."
+  },
+  "examples": [
+    {
+      "ticker": "WXHIGH-SFO-2610080359",
+      "title": "Highest temperature in San Francisco on October 7, 2026?",
+      "asOfHour": 18,
+      "observedMax": 74,
+      "winner": "LO76",
+      "nowcastPWin": 0.991,
+      "forecastPWin": 0.003,
+      "floorOnlyPWin": 0.002
+    },
+    {
+      "ticker": "WXHIGH-SFO-2610030359",
+      "title": "Highest temperature in San Francisco on October 2, 2026?",
+      "asOfHour": 18,
+      "observedMax": 74,
+      "winner": "LO76",
+      "nowcastPWin": 0.988,
+      "forecastPWin": 0.006,
+      "floorOnlyPWin": 0.005
+    },
+    {
+      "ticker": "WXHIGH-SFO-2609220359",
+      "title": "Highest temperature in San Francisco on September 21, 2026?",
+      "asOfHour": 18,
+      "observedMax": 68,
+      "winner": "68TO69",
+      "nowcastPWin": 0.915,
+      "forecastPWin": 0,
+      "floorOnlyPWin": 1
+    },
+    {
+      "ticker": "WXHIGH-SFO-2610110359",
+      "title": "Highest temperature in San Francisco on October 10, 2026?",
+      "asOfHour": 18,
+      "observedMax": 65,
+      "winner": "65TO66",
+      "nowcastPWin": 0.906,
+      "forecastPWin": 0.002,
+      "floorOnlyPWin": 1
+    },
+    {
+      "ticker": "WXHIGH-CVG-2609240359",
+      "title": "Highest temperature in Cincinnati on September 23, 2026?",
+      "asOfHour": 18,
+      "observedMax": 63,
+      "winner": "LO65",
+      "nowcastPWin": 0.112,
+      "forecastPWin": 0.986,
+      "floorOnlyPWin": 0.978
+    },
+    {
+      "ticker": "WXHIGH-BOS-2609280359",
+      "title": "Highest temperature in Boston on September 27, 2026?",
+      "asOfHour": 15,
+      "observedMax": 60,
+      "winner": "LO61",
+      "nowcastPWin": 0.08,
+      "forecastPWin": 0.848,
+      "floorOnlyPWin": 0.798
+    }
+  ],
+  "params": {
+    "nowcastNoise": {
+      "base": 0.25,
+      "perHour": 0.1,
+      "cap": 4,
+      "iid": 0.5,
+      "decay": 0.85,
+      "biasWindowHours": 3
+    },
+    "forecastOnlySd": 1.148,
+    "upliftMean": 0.664
+  },
+  "notes": "Bins and outcomes: real settled Gemini WXHIGH contracts (api.gemini.com/v1/prediction-markets/events?status=settled&category=weather); truth = the contract Gemini resolved YES. Station check: NWS CLI high (IEM json/cli.py) of the mapped station (src/lib/stations.ts stationFor) must fall in the YES contract. Cities under 90% were tried against alternates; the better-matching station is used for the replay. No overrides needed. Replay: as of 12/15/18 local standard time, METARs before that time only. Models identical to scripts/backtest.ts (lib-replay.ts). Nowcast noise params come from public/backtest.json (fitted on a different set of station-days, not tuned here). Forecast-only station bias and nowcast hour bias are leave-one-day-out; forecast-only sd (1.148) and the peak-uplift distribution are in-sample over these station-days. floorOnly = forecast-only distribution truncated to >= round(max METAR so far) and renormalized. Forecast: Open-Meteo historical-forecast GFS, which behaves like a short-lead forecast and flatters forecast-only. 1 events skipped (missing CLI, forecast or METARs for the replay station): WXHIGH-PHX-2609280359."
+}

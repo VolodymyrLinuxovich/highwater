@@ -140,7 +140,7 @@ export function nowcast(opts: {
   const nowDist = blend(toDist(now_), fcDist, w);
   return {
     observedMax,
-    floor: observedMax != null ? Math.round(observedMax) : null,
+    floor: observedMax != null ? Math.floor(observedMax) : null, // floor, not round: one ANC day had CLI 42 with a 42.8°F METAR max
     bias,
     hoursLeft,
     nowcast: nowDist,

@@ -28,22 +28,35 @@ Before about noon local time the observed max says little, so the engine blends 
 
 ## Does it work?
 
-`scripts/backtest.ts` replays 30 days (2026-09-10 to 2026-10-10) at 12 stations, 371 station-days in all. For each day
-it uses only the METARs available at a given local hour, and scores both models on 7 Gemini-style bins against the
-official CLI high from the Iowa Environmental Mesonet. Lower Brier is better.
+### On real Gemini contracts
 
-| As of | Brier, Highwater | Brier, forecast only | Top bin correct, Highwater vs forecast only |
-| ----- | ---------------- | -------------------- | ------------------------------------------- |
-| 09:00 | 0.547            | 0.489                | 56% vs 63%                                  |
-| 12:00 | 0.476            | 0.489                | 63% vs 63%                                  |
-| 15:00 | 0.404            | 0.489                | 71% vs 63%                                  |
-| 18:00 | 0.351            | 0.489                | 74% vs 63%                                  |
+`scripts/realcontracts.ts` replays 978 settled Gemini weather events in 49 cities (2026-09-21 to 2026-10-10). Each day
+is rebuilt as of a local hour using only the METARs available then, and scored against the contract Gemini actually
+settled YES. Lower Brier is better.
 
-The probabilities are well calibrated: each decile lands within about 6 points of the observed frequency. See
-`public/backtest.json`.
+| As of | Highwater | Floor only | Forecast only | Avg P(winning contract), Highwater vs forecast |
+| ----- | --------- | ---------- | ------------- | ---------------------------------------------- |
+| 12:00 | 0.427     | 0.450      | 0.477         | 56% vs 50%                                     |
+| 15:00 | 0.338     | 0.390      | 0.477         | 65% vs 50%                                     |
+| 18:00 | 0.306     | 0.377      | 0.477         | 70% vs 50%                                     |
 
-Caveats: the historical forecasts are stitched short-lead runs, which flatters the baseline. Some of the noise
-parameters were tuned on the same month. The bins are synthetic, not real Gemini strikes.
+"Floor only" just cuts the forecast distribution at the high so far. It explains about half of the gain.
+
+- **Impossible means impossible.** Of 2,345 contracts the floor ruled out, all 2,345 settled NO. Rounding the METAR
+  max instead of truncating it produced one wrong call (Anchorage, 10/05), so the engine truncates.
+- **The station map is right.** For all 49 cities, the official CLI high at our mapped station falls in the contract
+  Gemini settled YES on every day checked. Nearby stations don't: LaGuardia matches NYC 15% of the time, O'Hare
+  matches Chicago 50%.
+
+### Synthetic bins, longer window
+
+`scripts/backtest.ts` covers 2026-09-10 to 2026-10-10 at 12 stations (371 station-days) with synthetic 2°F bins. It also
+produces the calibration curve and the parameters the live engine uses. At 9:00 the observed max says little and the
+nowcast scores worse than the forecast (Brier 0.547 vs 0.489). So the live engine blends from forecast-only at 9:00
+to the full nowcast at 12:00.
+
+Caveats: the historical forecasts are stitched short-lead runs, which flatters the baseline. The forecast-only spread
+and the unobserved-peak distribution were fitted on the same days.
 
 ## Sandbox desk
 
@@ -56,7 +69,8 @@ volatility in a lognormal model, then takes the gaps with signed REST orders on 
 ```bash
 npm install
 npm run dev            # http://localhost:3000
-npx tsx scripts/backtest.ts   # regenerates public/backtest.json (~35s)
+npx tsx scripts/backtest.ts       # synthetic-bin backtest -> public/backtest.json (~35s)
+npx tsx scripts/realcontracts.ts  # settled Gemini contracts -> public/realcontracts.json (~45s)
 ```
 
 The weather side needs no keys. To trade on the sandbox, create an API key at
@@ -78,7 +92,9 @@ GEMINI_API_SECRET=...
 | `src/lib/engine.ts`           | Bias, Monte Carlo, blend, bin probabilities, quotes                |
 | `src/lib/crypto.ts`           | Sandbox crypto contracts priced from spot and realized vol         |
 | `src/lib/gemini-trade.ts`     | HMAC-signed prediction market orders                               |
-| `scripts/backtest.ts`         | Replay and scoring against official CLI highs                      |
+| `scripts/lib-replay.ts`       | Shared replay: data loading, nowcast and baseline models, scoring  |
+| `scripts/backtest.ts`         | Synthetic-bin backtest, calibration, parameter estimates           |
+| `scripts/realcontracts.ts`    | Scoring on settled Gemini contracts, station-map check             |
 
 ## Data sources
 
@@ -89,6 +105,6 @@ archives.
 ## Limits
 
 - The city-to-station map follows the airport code, with explicit exceptions (Central Park for NYC, Midway for Chicago).
-  Gemini's contract text names the city, not the station.
+  It is verified against 20 days of Gemini settlements per city.
 - Gemini doesn't allow weather trading in the sandbox, so weather quotes are shown, not posted.
 - Not financial advice.

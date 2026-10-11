@@ -56,7 +56,7 @@ export default function Dashboard() {
     return list;
   }, [data, sort]);
 
-  const current = data?.cities.find((c) => c.ticker === selected) ?? null;
+  const current = data?.cities?.find((c) => c.ticker === selected) ?? null;
 
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">
@@ -81,7 +81,7 @@ export default function Dashboard() {
                 setSelected(null);
               }}
               className={`rounded-md border px-3 py-1.5 text-sm num ${
-                (date ?? data.cities[0]?.date) === d
+                (date ?? data.cities?.[0]?.date) === d
                   ? "border-accent text-accent"
                   : "border-line text-muted hover:text-foreground"
               }`}

@@ -8,8 +8,7 @@ export default function ResultsPage() {
   return (
     <>
       <PageHeader eyebrow="Results" title="Does it work?">
-        We replayed past days using only the weather reports that existed at the time, then checked the probabilities against
-        how Gemini actually settled. Everything below is computed by the scripts in the repository.
+        We replayed real Gemini markets that already settled, using only what was known at the time.
       </PageHeader>
       <Backtest />
     </>

@@ -1,0 +1,587 @@
+{
+  "generatedAt": "2026-10-11T21:43:15.515Z",
+  "days": 31,
+  "stationDays": 371,
+  "period": {
+    "start": "2026-09-10",
+    "end": "2026-10-10"
+  },
+  "stations": [
+    {
+      "id": "KNYC",
+      "name": "New York City, Central Park",
+      "lat": 40.78333,
+      "lon": -73.96667,
+      "tz": "America/New_York",
+      "stdUtcOffsetMin": -300
+    },
+    {
+      "id": "KMDW",
+      "name": "Chicago, Chicago Midway Airport",
+      "lat": 41.78417,
+      "lon": -87.75528,
+      "tz": "America/Chicago",
+      "stdUtcOffsetMin": -360
+    },
+    {
+      "id": "KMIA",
+      "name": "Miami, Miami International Airport",
+      "lat": 25.79056,
+      "lon": -80.31639,
+      "tz": "America/New_York",
+      "stdUtcOffsetMin": -300
+    },
+    {
+      "id": "KLAX",
+      "name": "Los Angeles, Los Angeles International Airport",
+      "lat": 33.93806,
+      "lon": -118.38889,
+      "tz": "America/Los_Angeles",
+      "stdUtcOffsetMin": -480
+    },
+    {
+      "id": "KBOS",
+      "name": "Boston, Logan International Airport",
+      "lat": 42.36056,
+      "lon": -71.01056,
+      "tz": "America/New_York",
+      "stdUtcOffsetMin": -300
+    },
+    {
+      "id": "KATL",
+      "name": "Atlanta, Hartsfield - Jackson Atlanta International Airport",
+      "lat": 33.64028,
+      "lon": -84.42694,
+      "tz": "America/New_York",
+      "stdUtcOffsetMin": -300
+    },
+    {
+      "id": "KDEN",
+      "name": "Denver, Denver International Airport",
+      "lat": 39.84658,
+      "lon": -104.65622,
+      "tz": "America/Denver",
+      "stdUtcOffsetMin": -420
+    },
+    {
+      "id": "KDFW",
+      "name": "Dallas/Fort Worth International Airport",
+      "lat": 32.89743,
+      "lon": -97.02196,
+      "tz": "America/Chicago",
+      "stdUtcOffsetMin": -360
+    },
+    {
+      "id": "KPHX",
+      "name": "Phoenix, Phoenix Sky Harbor International Airport",
+      "lat": 33.427799,
+      "lon": -112.003465,
+      "tz": "America/Phoenix",
+      "stdUtcOffsetMin": -420
+    },
+    {
+      "id": "KSEA",
+      "name": "Seattle, Seattle-Tacoma International Airport",
+      "lat": 47.44472,
+      "lon": -122.31361,
+      "tz": "America/Los_Angeles",
+      "stdUtcOffsetMin": -480
+    },
+    {
+      "id": "KMSP",
+      "name": "Minneapolis, Minneapolis-St. Paul International Airport",
+      "lat": 44.88306,
+      "lon": -93.22889,
+      "tz": "America/Chicago",
+      "stdUtcOffsetMin": -360
+    },
+    {
+      "id": "KPHL",
+      "name": "Philadelphia, Philadelphia International Airport",
+      "lat": 39.87327,
+      "lon": -75.22678,
+      "tz": "America/New_York",
+      "stdUtcOffsetMin": -300
+    }
+  ],
+  "byAsOfHour": [
+    {
+      "hour": 9,
+      "n": 371,
+      "nowcast": {
+        "brier": 0.547,
+        "logLoss": 0.958,
+        "acc": 0.563
+      },
+      "forecastOnly": {
+        "brier": 0.489,
+        "logLoss": 0.856,
+        "acc": 0.633
+      }
+    },
+    {
+      "hour": 12,
+      "n": 371,
+      "nowcast": {
+        "brier": 0.476,
+        "logLoss": 0.809,
+        "acc": 0.633
+      },
+      "forecastOnly": {
+        "brier": 0.489,
+        "logLoss": 0.856,
+        "acc": 0.633
+      }
+    },
+    {
+      "hour": 15,
+      "n": 371,
+      "nowcast": {
+        "brier": 0.404,
+        "logLoss": 0.679,
+        "acc": 0.706
+      },
+      "forecastOnly": {
+        "brier": 0.489,
+        "logLoss": 0.856,
+        "acc": 0.633
+      }
+    },
+    {
+      "hour": 18,
+      "n": 371,
+      "nowcast": {
+        "brier": 0.351,
+        "logLoss": 0.589,
+        "acc": 0.741
+      },
+      "forecastOnly": {
+        "brier": 0.489,
+        "logLoss": 0.856,
+        "acc": 0.633
+      }
+    }
+  ],
+  "calibration": [
+    {
+      "bucket": 0.05,
+      "predicted": 0.01,
+      "observed": 0.01,
+      "n": 7364
+    },
+    {
+      "bucket": 0.15,
+      "predicted": 0.144,
+      "observed": 0.116,
+      "n": 467
+    },
+    {
+      "bucket": 0.25,
+      "predicted": 0.246,
+      "observed": 0.23,
+      "n": 331
+    },
+    {
+      "bucket": 0.35,
+      "predicted": 0.36,
+      "observed": 0.42,
+      "n": 550
+    },
+    {
+      "bucket": 0.45,
+      "predicted": 0.449,
+      "observed": 0.41,
+      "n": 339
+    },
+    {
+      "bucket": 0.55,
+      "predicted": 0.561,
+      "observed": 0.582,
+      "n": 409
+    },
+    {
+      "bucket": 0.65,
+      "predicted": 0.636,
+      "observed": 0.62,
+      "n": 503
+    },
+    {
+      "bucket": 0.75,
+      "predicted": 0.73,
+      "observed": 0.768,
+      "n": 99
+    },
+    {
+      "bucket": 0.85,
+      "predicted": 0.875,
+      "observed": 0.862,
+      "n": 109
+    },
+    {
+      "bucket": 0.95,
+      "predicted": 0.908,
+      "observed": 0.894,
+      "n": 217
+    }
+  ],
+  "peakUplift": {
+    "mean": 0.719,
+    "p50": 1,
+    "p90": 1
+  },
+  "params": {
+    "nowcastNoise": {
+      "base": 0.25,
+      "perHour": 0.1,
+      "cap": 4,
+      "iid": 0.5,
+      "decay": 0.85,
+      "biasWindowHours": 3,
+      "formula": "temp[h] = fcst[h] + hourBias[station][h] + anomaly * decay^lead + sd(lead) * z + N(0, iid); sd(lead) = min(cap, base + perHour * leadHours); z shared across hours per sample; anomaly = mean(obs - fcst - hourBias) over last biasWindowHours",
+      "hourBias": {
+        "KNYC": [
+          -0.65,
+          1.203,
+          1.29,
+          1.455,
+          1.381,
+          1.456,
+          1.262,
+          0.384,
+          -0.228,
+          -0.759,
+          -1.235,
+          -2.022,
+          -2.331,
+          -2.163,
+          -2.38,
+          -2.226,
+          -2.011,
+          -1.211,
+          -0.343,
+          -0.088,
+          0.352,
+          0.939,
+          1.203,
+          1.263
+        ],
+        "KMDW": [
+          -1,
+          2.261,
+          1.948,
+          1.987,
+          1.845,
+          1.926,
+          1.76,
+          1.361,
+          0.85,
+          0.594,
+          -0.019,
+          -0.295,
+          -0.374,
+          -0.531,
+          -0.275,
+          -0.023,
+          0.242,
+          0.69,
+          1.281,
+          1.629,
+          2.174,
+          2.519,
+          2.49,
+          2.312
+        ],
+        "KMIA": [
+          0.8,
+          1.043,
+          1.058,
+          0.937,
+          1.094,
+          0.955,
+          1.265,
+          0.819,
+          0.677,
+          0.466,
+          0.298,
+          0.043,
+          -0.485,
+          0.168,
+          -0.126,
+          0.159,
+          0.213,
+          0,
+          0.085,
+          0.381,
+          0.335,
+          0.839,
+          1.29,
+          1.097
+        ],
+        "KLAX": [
+          0,
+          2.331,
+          2.6,
+          2.394,
+          1.88,
+          2.352,
+          2.542,
+          1.284,
+          0.223,
+          -0.238,
+          -0.071,
+          -0.061,
+          -0.455,
+          0.113,
+          0.252,
+          0.181,
+          0.303,
+          0.458,
+          0.939,
+          1.729,
+          1.919,
+          2.142,
+          2.516,
+          2.275
+        ],
+        "KBOS": [
+          1,
+          2.742,
+          2.758,
+          2.629,
+          2.5,
+          2.665,
+          2.809,
+          1.876,
+          1.332,
+          0.588,
+          0.777,
+          0.083,
+          -0.104,
+          -0.279,
+          -0.226,
+          0.078,
+          0.279,
+          1.477,
+          1.948,
+          2.44,
+          2.354,
+          2.539,
+          2.916,
+          3.106
+        ],
+        "KATL": [
+          -0.15,
+          1.213,
+          1.119,
+          1.061,
+          0.989,
+          1.091,
+          0.959,
+          0.881,
+          0.487,
+          0.226,
+          -0.24,
+          -0.774,
+          -0.855,
+          -0.977,
+          -1.006,
+          -0.976,
+          -0.414,
+          0.084,
+          0.126,
+          0.538,
+          1.448,
+          1.416,
+          1.374,
+          1.406
+        ],
+        "KDEN": [
+          0,
+          0.787,
+          0.784,
+          0.784,
+          0.69,
+          1.795,
+          2.148,
+          1.716,
+          0.429,
+          0.132,
+          -0.184,
+          -0.206,
+          -0.48,
+          -0.232,
+          -0.232,
+          -0.345,
+          -0.718,
+          -0.549,
+          0.023,
+          -0.09,
+          -0.084,
+          0.187,
+          0.497,
+          0.765
+        ],
+        "KDFW": [
+          0.5,
+          0.739,
+          0.929,
+          0.842,
+          0.742,
+          0.387,
+          0.281,
+          0.473,
+          0.345,
+          0.061,
+          -0.602,
+          -0.629,
+          -0.898,
+          -0.945,
+          -0.899,
+          -0.506,
+          -0.725,
+          -0.126,
+          -0.084,
+          0.06,
+          0.461,
+          0.708,
+          0.971,
+          0.906
+        ],
+        "KPHX": [
+          0,
+          1.593,
+          1.603,
+          1.383,
+          1.32,
+          0.678,
+          0.903,
+          0.555,
+          -0.037,
+          0.19,
+          -0.163,
+          -0.487,
+          -0.655,
+          -0.639,
+          -0.064,
+          0.373,
+          0.39,
+          0.343,
+          0.89,
+          2.103,
+          2.267,
+          2.205,
+          1.56,
+          1.24
+        ],
+        "KSEA": [
+          0.667,
+          1.687,
+          1.847,
+          1.948,
+          1.518,
+          1.554,
+          1.789,
+          1.552,
+          0.547,
+          0.303,
+          -0.161,
+          -0.694,
+          -0.752,
+          -0.545,
+          -0.323,
+          -0.203,
+          -0.097,
+          0.029,
+          0.224,
+          0.884,
+          1.132,
+          1.874,
+          1.684,
+          1.574
+        ],
+        "KMSP": [
+          0.95,
+          1.957,
+          1.708,
+          1.668,
+          1.221,
+          1.304,
+          1.544,
+          1.306,
+          0.587,
+          0.287,
+          -0.308,
+          -0.565,
+          -0.414,
+          -0.398,
+          -0.026,
+          -0.152,
+          0.281,
+          0.274,
+          0.888,
+          1.523,
+          1.577,
+          2.232,
+          2.166,
+          2.21
+        ],
+        "KPHL": [
+          -0.4,
+          2.029,
+          2.029,
+          2.251,
+          2.145,
+          1.906,
+          2.149,
+          1.689,
+          1.401,
+          1.315,
+          1.256,
+          0.901,
+          0.976,
+          1.068,
+          0.929,
+          1.103,
+          1.31,
+          1.951,
+          2.418,
+          2.726,
+          2.732,
+          2.414,
+          2.19,
+          2.362
+        ]
+      }
+    },
+    "peakUplift": {
+      "pmf": {
+        "0": 0.388,
+        "1": 0.518,
+        "2": 0.084,
+        "3": 0.008,
+        "4": 0.003
+      },
+      "n": 371,
+      "note": "CLI max minus max METAR (routine+special) over the LST day, clipped at 0; add one draw to the simulated high"
+    },
+    "forecastOnly": {
+      "residualSd": 1.049,
+      "stationBias": {
+        "KNYC": -1.732,
+        "KMDW": 0.5,
+        "KMIA": 1.497,
+        "KLAX": 0.584,
+        "KBOS": 0.623,
+        "KATL": -0.035,
+        "KDEN": 0.761,
+        "KDFW": 0.103,
+        "KPHX": 1.54,
+        "KSEA": 0.503,
+        "KMSP": 0.477,
+        "KPHL": 2.003
+      },
+      "note": "stationBias = mean(CLI high - max hourly GFS forecast) over the period"
+    }
+  },
+  "notes": "Truth: NWS CLI daily max via IEM json/cli.py. Obs: IEM ASOS METARs (routine+special). Forecast: Open-Meteo historical-forecast GFS (gfs_seamless), hourly. Climate day = local standard time midnight to midnight. As-of hours are LST. Bins: 5 interior 2°F bins centered on the forecast-only median plus two open tails (7 outcomes). Caveat: Open-Meteo historical forecasts are stitched from the first hours of successive model runs, so they behave like short-lead forecasts; a real day-ahead forecast would be worse, which flatters the forecast-only baseline. Caveat: nowcast noise params were picked by a 18-point grid search on this same sample (in-sample), and the peak-uplift distribution uses all station-days. Forecast-only station bias and nowcast hourly bias are leave-one-day-out; its residual sd is in-sample. Peak uplift: 3 of 371 station-days had CLI max below the max METAR (clipped to 0). 1 station-days skipped for missing data."
+}

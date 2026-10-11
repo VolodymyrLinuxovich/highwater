@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Board, CityCard } from "@/lib/board";
 import Backtest from "./Backtest";
 import CityDetail from "./CityDetail";
+import SandboxDesk from "./SandboxDesk";
 
 type Payload = Board & { dates: string[]; error?: string };
 
@@ -106,6 +107,7 @@ export default function Dashboard() {
             ))}
           </div>
           <Backtest />
+          <SandboxDesk />
           <HowItWorks params={data.params} />
         </>
       )}
@@ -177,7 +179,7 @@ function Card({ c, onClick }: { c: CityCard; onClick: () => void }) {
 
       <div className="mt-3 space-y-1">
         {c.quotes.map((q) => (
-          <div key={q.symbol} className="grid grid-cols-[72px_1fr_36px] items-center gap-2 text-xs">
+          <div key={q.symbol} className="grid grid-cols-[88px_1fr_36px] items-center gap-2 text-xs">
             <span className={`num truncate ${q.status === "dead" ? "text-muted line-through" : ""}`}>{shortLabel(q.label)}</span>
             <div className="relative h-3 rounded-sm bg-background">
               <div className="absolute inset-y-0 left-0 rounded-sm bg-cool/25" style={{ width: pct(q.forecastOnly / maxP) }} />

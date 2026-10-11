@@ -119,7 +119,7 @@ export function Instrument() {
         <span className="num text-accent">{pct(lead.fair)}</span> chance, with{" "}
         {c.hoursLeft}h of the climate day left.{" "}
         <Link
-          href={`/board?city=${c.city}`}
+          href="/board"
           className="whitespace-nowrap text-accent hover:underline"
         >
           Every contract →

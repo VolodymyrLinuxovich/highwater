@@ -23,10 +23,8 @@ const match = (c: CityCard, q: string) =>
 export default function Board() {
   const [date, setDate] = useState<string | null>(null);
   const { data, loading, refresh } = useBoard(date);
-  // Deep link: /board?city=NYC selects that city once data arrives.
-  const [selected, setSelected] = useState<string | null>(() =>
-    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("city"),
-  );
+  // A city opens only when clicked.
+  const [selected, setSelected] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const panelRef = useRef<HTMLDivElement>(null);
@@ -38,23 +36,16 @@ export default function Board() {
   const dimmed = new Set(all.filter((c) => !visible.includes(c)).map((c) => c.ticker));
   const suggestions = q ? visible.slice(0, 6) : [];
 
-  // Nothing is selected until a city is clicked (or deep-linked with ?city=).
+  // Nothing is selected until a city is clicked.
   const current = selected ? (all.find((c) => c.ticker === selected || c.city.toUpperCase() === selected.toUpperCase()) ?? null) : null;
 
   function close() {
     setSelected(null);
-    const url = new URL(window.location.href);
-    url.searchParams.delete("city");
-    window.history.replaceState(null, "", url);
   }
 
   function select(id: string) {
     setSelected(id);
     setQuery("");
-    const city = all.find((c) => c.ticker === id)?.city;
-    const url = new URL(window.location.href);
-    if (city) url.searchParams.set("city", city);
-    window.history.replaceState(null, "", url);
     // On narrow screens the panel sits below the map; bring it into view.
     if (window.matchMedia("(max-width: 1023px)").matches)
       setTimeout(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
@@ -134,12 +125,13 @@ export default function Board() {
             </div>
           </div>
 
-          <div className={`mt-3 grid items-start gap-4 ${current ? "lg:grid-cols-[1.15fr_1fr]" : ""}`}>
-            <div className="min-w-0 lg:sticky lg:top-20">
-              <UsMap cities={all} onSelect={select} selected={current?.ticker ?? null} dimmed={dimmed} />
-            </div>
+          <div className="relative mt-3">
+            <UsMap cities={all} onSelect={select} selected={current?.ticker ?? null} dimmed={dimmed} />
             {current && (
-              <div ref={panelRef} className="relative min-w-0 scroll-mt-20">
+              <div
+                ref={panelRef}
+                className={`relative mt-4 min-w-0 scroll-mt-20 lg:absolute lg:top-3 ${current.lon > -98 ? "lg:left-3" : "lg:right-3"} lg:mt-0 lg:max-h-[calc(100%-1.5rem)] lg:w-[460px] lg:overflow-y-auto lg:rounded-2xl lg:shadow-2xl lg:shadow-black/60`}
+              >
                 <button
                   onClick={close}
                   aria-label="Close city panel"

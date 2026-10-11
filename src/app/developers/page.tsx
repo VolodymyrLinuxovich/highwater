@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import AgentApi from "@/components/AgentApi";
-import PageHeader, { SectionTitle } from "@/components/PageHeader";
 import { PRICE_BOARD, PRICE_FORECAST } from "@/lib/paid";
 import { PARAMS } from "@/lib/params";
 import { AUSD, NETWORK } from "@/lib/x402";
@@ -8,10 +7,10 @@ import { AUSD, NETWORK } from "@/lib/x402";
 export const metadata: Metadata = { title: "For developers · Highwater" };
 
 const STEPS = [
-  ["Ask", "Call a paid endpoint without payment. It answers 402 Payment Required with standard x402 v1 requirements."],
-  ["Sign", "The agent signs an ERC-3009 TransferWithAuthorization for the price in AUSD. It needs no ETH, only AUSD."],
-  ["Verify", "Highwater checks the signature, recipient, amount, validity window, unused nonce and the payer's balance."],
-  ["Settle", "Highwater submits the transfer on Base Sepolia, waits for the receipt, and returns the data with X-PAYMENT-RESPONSE."],
+  { title: "Agent asks", body: <code className="num text-cool">GET /api/paid/forecast?city=NYC</code> },
+  { title: "Gets 402", body: <>Payment Required: <span className="num text-foreground">{PRICE_FORECAST} AUSD</span></> },
+  { title: "Signs", body: "A gasless AUSD transfer (ERC-3009). No ETH needed." },
+  { title: "Gets the forecast", body: "Settled on Base Sepolia. Data comes back with the tx hash." },
 ];
 
 const FIELDS = [
@@ -35,107 +34,86 @@ const receipt = decodeXPaymentResponse(r.headers.get("x-payment-response")!);`;
 export default function DevelopersPage() {
   return (
     <>
-      <PageHeader eyebrow="For developers" title="Buy a forecast per call">
-        Trading bots don&apos;t want a subscription; they want one number right before they quote. Highwater sells each forecast
-        over x402, paid in Agora&apos;s AUSD on Base Sepolia (testnet). Any standard x402 client works.
-      </PageHeader>
+      <div className="pt-14 pb-10 text-center sm:pt-20">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
+          A forecast for <span className="font-serif font-normal italic text-accent">half a cent.</span>
+        </h1>
+        <p className="mx-auto mt-5 max-w-xl text-lg text-muted">Trading bots pay per call over x402, in AUSD. No account, no API key.</p>
+      </div>
 
-      <AgentApi />
-
-      <SectionTitle title="How a paid call works" />
-      <ol className="grid gap-3 md:grid-cols-4">
-        {STEPS.map(([t, b], i) => (
-          <li key={t} className="rounded-2xl border border-line bg-panel p-5">
-            <div className="num text-xs text-accent">0{i + 1}</div>
-            <div className="mt-1 font-medium">{t}</div>
-            <p className="mt-1.5 text-sm leading-relaxed text-muted">{b}</p>
+      <ol className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        {STEPS.map((s, i) => (
+          <li key={s.title} className="bg-background p-6 sm:p-8">
+            <div className="num font-serif text-6xl italic leading-none text-accent">{i + 1}</div>
+            <h2 className="mt-5 text-2xl font-semibold tracking-tight">{s.title}</h2>
+            <p className="mt-2 text-base leading-relaxed text-muted">{s.body}</p>
           </li>
         ))}
       </ol>
 
-      <SectionTitle title="Reference" />
-      <div className="grid gap-3 lg:grid-cols-2">
-        <div className="rounded-2xl border border-line bg-panel p-5">
-          <h3 className="font-medium">Endpoints</h3>
-          <div className="mt-3 space-y-2 text-sm">
-            <div className="flex items-center justify-between gap-3 rounded-lg bg-background p-3">
-              <code className="num text-cool">GET /api/paid/forecast?city=NYC</code>
-              <span className="num shrink-0 font-semibold">{PRICE_FORECAST} AUSD</span>
-            </div>
-            <div className="flex items-center justify-between gap-3 rounded-lg bg-background p-3">
-              <code className="num text-cool">GET /api/paid/board</code>
-              <span className="num shrink-0 font-semibold">{PRICE_BOARD} AUSD</span>
-            </div>
+      <h2 className="mt-20 text-center text-3xl font-semibold tracking-tight">Try it live</h2>
+      <p className="mx-auto mt-3 max-w-lg text-center text-base text-muted">Our demo agent pays real testnet AUSD and gets the forecast.</p>
+      <div className="mt-8">
+        <AgentApi />
+      </div>
+
+      <details className="group mt-16 rounded-2xl border border-line bg-panel">
+        <summary className="flex cursor-pointer list-none items-center justify-between p-6 text-lg font-medium">
+          Technical details
+          <span className="text-muted transition group-open:rotate-45">+</span>
+        </summary>
+        <div className="grid gap-8 border-t border-line p-6 text-sm leading-relaxed text-muted lg:grid-cols-2">
+          <div>
+            <h3 className="font-medium text-foreground">Endpoints</h3>
+            <ul className="mt-2 space-y-1">
+              <li>
+                <code className="num text-cool">GET /api/paid/forecast?city=NYC</code>: {PRICE_FORECAST} AUSD, one city
+              </li>
+              <li>
+                <code className="num text-cool">GET /api/paid/board</code>: {PRICE_BOARD} AUSD, all 49 cities
+              </li>
+              <li>
+                <code className="num text-cool">GET /api/board</code>: free, what the site uses
+              </li>
+            </ul>
+            <h3 className="mt-5 font-medium text-foreground">Payment</h3>
+            <p className="mt-1">
+              x402 v1, scheme <span className="num">exact</span>, network <span className="num">{NETWORK}</span>, asset AUSD{" "}
+              <span className="num break-all">{AUSD}</span>, EIP-712 domain <span className="num">Agora Dollar / 1</span>. Highwater
+              checks signature, recipient, amount, validity window, nonce and balance, then submits the transfer from its relayer.
+            </p>
+            <h3 className="mt-5 font-medium text-foreground">Response fields</h3>
+            <table className="mt-2 w-full text-xs">
+              <tbody>
+                {FIELDS.map(([k, v]) => (
+                  <tr key={k} className="border-t border-line/60">
+                    <td className="num py-2 pr-3 align-top text-cool">{k}</td>
+                    <td className="py-2">{v}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <dl className="mt-4 grid grid-cols-[110px_1fr] gap-y-1.5 text-xs">
-            <dt className="text-muted">Scheme</dt>
-            <dd className="num">exact (x402 v1)</dd>
-            <dt className="text-muted">Network</dt>
-            <dd className="num">{NETWORK}</dd>
-            <dt className="text-muted">Asset</dt>
-            <dd className="num break-all">AUSD {AUSD}</dd>
-            <dt className="text-muted">EIP-712 domain</dt>
-            <dd className="num">Agora Dollar / 1</dd>
-          </dl>
-          <h3 className="mt-5 font-medium">Response fields</h3>
-          <table className="mt-2 w-full text-xs">
-            <tbody>
-              {FIELDS.map(([k, v]) => (
-                <tr key={k} className="border-t border-line/60">
-                  <td className="num py-2 pr-3 align-top text-cool">{k}</td>
-                  <td className="py-2 text-muted">{v}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="min-w-0 rounded-2xl border border-line bg-panel p-5">
-          <h3 className="font-medium">Client</h3>
-          <pre className="mt-3 overflow-x-auto rounded-lg bg-background p-4 text-xs leading-relaxed text-muted">
-            <code>{CLIENT}</code>
-          </pre>
-          <h3 className="mt-5 font-medium">From the repository</h3>
-          <pre className="mt-3 overflow-x-auto rounded-lg bg-background p-4 text-xs leading-relaxed text-muted">
-            <code>{`# faucet AUSD to the demo agent (relayer pays gas)
-npx tsx --env-file=.env.local scripts/fund-agent.ts
-
-# trading agent: buys forecasts, flags mispriced contracts
+          <div className="min-w-0">
+            <h3 className="font-medium text-foreground">Client</h3>
+            <pre className="mt-2 overflow-x-auto rounded-lg bg-background p-4 text-xs leading-relaxed">
+              <code>{CLIENT}</code>
+            </pre>
+            <h3 className="mt-5 font-medium text-foreground">From the repository</h3>
+            <pre className="mt-2 overflow-x-auto rounded-lg bg-background p-4 text-xs leading-relaxed">
+              <code>{`npx tsx --env-file=.env.local scripts/fund-agent.ts
 npx tsx --env-file=.env.local scripts/agent.ts <baseUrl> NYC CHI MIA`}</code>
-          </pre>
-          <p className="mt-3 text-xs text-muted">
-            The free board data the site itself uses is at <code className="num text-cool">GET /api/board</code>.
-          </p>
+            </pre>
+            <h3 className="mt-5 font-medium text-foreground">Model</h3>
+            <p className="mt-1">
+              Floor from every METAR since local-standard midnight, rounded down. 82 ensemble members (GFS + ECMWF) shifted by
+              today&apos;s observed error ({PARAMS.biasHalfLifeHours}h half-life), with error of {PARAMS.noiseBase}°F +{" "}
+              {PARAMS.noiseSlope}°F per hour (max {PARAMS.noiseCap}°F). Blends from forecast-only at {PARAMS.blendStartHour}:00 to
+              the full nowcast at {PARAMS.blendEndHour}:00. Parameters: {PARAMS.source}.
+            </p>
+          </div>
         </div>
-      </div>
-
-      <SectionTitle title="Model details">
-        The live engine&apos;s parameters, taken from <span className="num">src/lib/params.ts</span>.
-      </SectionTitle>
-      <div className="grid gap-3 text-sm leading-relaxed text-muted md:grid-cols-3">
-        <div className="rounded-2xl border border-line bg-panel p-5">
-          <h3 className="font-medium text-foreground">The floor</h3>
-          <p className="mt-1.5">
-            Gemini settles on the NWS Daily Climate Report, a midnight-to-midnight window in local <em>standard</em> time. Every
-            METAR since then, plus the 6-hour maximum groups, gives the high so far, rounded down.
-          </p>
-        </div>
-        <div className="rounded-2xl border border-line bg-panel p-5">
-          <h3 className="font-medium text-foreground">The rest of the day</h3>
-          <p className="mt-1.5">
-            82 ensemble members (GFS + ECMWF) shifted by today&apos;s observed forecast error ({PARAMS.biasHalfLifeHours}h
-            half-life). Error grows with lead time: {PARAMS.noiseBase}°F + {PARAMS.noiseSlope}°F per hour, capped at{" "}
-            {PARAMS.noiseCap}°F.
-          </p>
-        </div>
-        <div className="rounded-2xl border border-line bg-panel p-5">
-          <h3 className="font-medium text-foreground">Pricing</h3>
-          <p className="mt-1.5">
-            Final high = max(high so far + unobserved peak, hottest remaining hour), simulated and rounded to whole °F. Blends
-            from forecast-only at {PARAMS.blendStartHour}:00 to the full nowcast at {PARAMS.blendEndHour}:00. Parameters:{" "}
-            {PARAMS.source}.
-          </p>
-        </div>
-      </div>
+      </details>
     </>
   );
 }

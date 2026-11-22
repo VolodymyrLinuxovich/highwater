@@ -15,8 +15,11 @@ rest of the day. Trading agents can buy each forecast **per call over x402, paid
 ![Base](https://img.shields.io/badge/Base_Sepolia-0052FF?style=for-the-badge&logo=coinbase&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-![Silver medal](https://img.shields.io/badge/B%40BHacks_2.0-Silver_Medal-C0C0C0?style=for-the-badge)
-![Gemini track](https://img.shields.io/badge/Gemini_Track-Winner_%2B_Medal-1A73E8?style=for-the-badge)
+<br/>
+
+<img src="docs/silver-medal.svg" alt="Silver medal at B@BHacks 2.0, Blockchain@Berkeley, October 11, 2026" width="520">
+
+<img src="docs/gemini-medal.svg" alt="Gemini track winner and Gemini medal at B@BHacks 2.0, October 11, 2026" width="520">
 
 <br/>
 
@@ -26,7 +29,7 @@ rest of the day. Trading agents can buy each forecast **per call over x402, paid
 
 **Hackathon:** B@BHacks 2.0 (Blockchain@Berkeley, SF Tech Week)<br/>
 **Tracks:** Most Technically Impressive · Best Use of Gemini Prediction API · Best Use of AUSD<br/>
-**Awards:** 🥈 Silver medal at B@BHacks 2.0 (Blockchain@Berkeley) · 🏆 Gemini track winner and Gemini medal<br/>
+**Result:** Silver medal, plus Gemini track winner and Gemini medal, B@BHacks 2.0, October 11, 2026<br/>
 **Team:** Volodymyr Borysenko<br/>
 **Live demo:** [highwater-tau.vercel.app](https://highwater-tau.vercel.app)
 
